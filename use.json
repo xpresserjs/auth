@@ -1,0 +1,11 @@
+{
+  "namespace": "Auth",
+  "paths": {
+    "controllers": "Controllers",
+    "routesFile": "routes.js",
+    "views": "Views"
+  },
+  "extends": {
+    "RequestEngine": "Extends/RequestEngine"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "@xpresser/auth",
+  "version": "0.0.1",
+  "description": "Xpresser Auth Helper",
+  "main": "index.js",
+  "repository": "https://github.com/xpresserjs/auth.git",
+  "author": "xpresserjs",
+  "license": "MIT",
+  "private": false,
+  "devDependencies": {
+    "xpresser": "^0.0.7"
+  },
+  "dependencies": {
+    "@xpresser/router": "^0.0.7"
+  }
+}
