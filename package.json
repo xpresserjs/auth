@@ -11,6 +11,7 @@
     "xpresser": "^0.0.7"
   },
   "dependencies": {
-    "@xpresser/router": "^0.0.7"
+    "@xpresser/router": "^0.0.7",
+    "bcrypt": "^3.0.6"
   }
 }

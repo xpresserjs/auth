@@ -1,12 +1,14 @@
 const XpresserRouter = require('@xpresser/router');
 const Route = new XpresserRouter('Auth');
 
-Route.path('/cp', () => {
-
+Route.path('/auth', () => {
     Route.get('', 'index');
+    Route.get('@dashboard');
 
-}).controller('Auth');
-
+    Route.post('@login');
+    Route.post('@register');
+    Route.all('@logout');
+}).controller('Auth', true).as('auth');
 
 $.routerEngine.addToRoutes(Route);
 
