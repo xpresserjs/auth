@@ -13,7 +13,7 @@ module.exports = {
      */
     allow(x) {
         if (!x.isLogged())
-            return x.redirect('/');
+            return x.redirectToRoute('auth.index');
 
         return x.next()
     },
@@ -21,7 +21,7 @@ module.exports = {
 
     guest(x) {
         if (x.isLogged())
-            return x.redirectToRoute('dashboard');
+            return x.redirectToRoute('auth.dashboard');
 
         return x.next();
     },

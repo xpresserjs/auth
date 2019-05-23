@@ -10,6 +10,7 @@ Route.path('/auth', () => {
     Route.all('@logout');
 }).controller('Auth', true).as('auth');
 
+
 $.routerEngine.addToRoutes(Route);
 
 // console.log($.routerEngine.allRoutes());

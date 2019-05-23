@@ -12,11 +12,7 @@ class AuthController extends $.controller {
     }
 
     dashboard(x) {
-        if ($.config.auth.viewsFromEngine) {
-            return x.renderViewFromEngine('dashboard');
-        } else {
-            return x.renderView('dashboard');
-        }
+        return x.view('auth::dashboard');
     }
 
     async login(x) {
@@ -88,7 +84,7 @@ class AuthController extends $.controller {
 
         x.with({logout: "Logout successful."});
 
-        return x.redirect("/");
+        return x.redirectToRoute("auth");
     }
 }
 
