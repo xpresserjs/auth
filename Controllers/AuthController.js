@@ -1,4 +1,4 @@
-const User = require("../Models/User");
+const User = $.use.model("Auth/User");
 const Bcrypt = require("bcrypt");
 
 class AuthController extends $.controller {
@@ -74,7 +74,7 @@ class AuthController extends $.controller {
         await User.query().insert(newUser);
 
         x.with('reg_success', 'Registration successful, Login now!');
-        return x.redirect('/');
+        return x.redirectToRoute('auth.login');
     }
 
     logout(x) {

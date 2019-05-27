@@ -11,16 +11,4 @@ module.exports = {
         $.log('UnInstall ran!');
     },
 
-    migration: {
-
-        after: () => {
-            $.log('After Migration ran!');
-        },
-
-        before: () => {
-            $.log('Before Migration ran!');
-        },
-
-    },
-
 };

@@ -2,10 +2,16 @@
   "namespace": "Auth",
   "paths": {
     "controllers": "Controllers",
-    "routesFile": "routes.js",
-    "views": "Views"
+    "migrations": "Migrations",
+    "middlewares": "Middlewares",
+    "views": "Views",
+    "models": "Models",
+    "routesFile": "routes.js"
   },
   "extends": {
-    "RequestEngine": "Extends/RequestEngine"
-  }
+    "RequestEngine": "Extends/RequestEngine.js"
+  },
+  "globalMiddlewares": [
+    "GlobalMiddleware"
+  ]
 }
