@@ -22,10 +22,10 @@
   dependencies:
     lodash.clone "^4.5.0"
 
-"@xpresser/router@^0.0.7":
-  version "0.0.7"
-  resolved "https://registry.yarnpkg.com/@xpresser/router/-/router-0.0.7.tgz#4faf6500bca560fe11e0707fdc78ae6b06009554"
-  integrity sha512-ZBjqdi6hdmev5IyGy5veTq3ILJC2z4cQ0TwiaSLV9QN0DBsgdXJ1MGMu0zsrVGG7b5fOIO6WwSOwD6kJy7Kt/w==
+"@xpresser/router@^0.0.8":
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/@xpresser/router/-/router-0.0.8.tgz#eb1482f0d54537d6990e7f1b228f4195c9a06b22"
+  integrity sha512-+277dmmAJGHlFSRjxq4EJJ2DH8hW0Zj88YJnsiPEW2WckewEduc/MpYhbSm4loGRf0+HicV1i37Dqy2hvhIkYw==
   dependencies:
     lodash.clone "^4.5.0"
 
