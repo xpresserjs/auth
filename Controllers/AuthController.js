@@ -3,16 +3,21 @@ const Bcrypt = require("bcrypt");
 
 class AuthController extends $.controller {
 
+    /**
+     * Login/Auth Index
+     * @param {RequestEngine} x
+     * @return {*}
+     */
     index(x) {
         const data = {
             action: x.get("action", "login")
         };
 
-        return x.view('auth::index', data);
+        return x.view('auth::index', data, false, true);
     }
 
     dashboard(x) {
-        return x.view('auth::dashboard');
+        return x.view('auth::dashboard', {}, false, true);
     }
 
     async login(x) {
