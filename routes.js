@@ -11,6 +11,5 @@ Route.path('/auth', () => {
 }).controller('Auth', true).as('auth');
 
 
+// Add Routes
 $.routerEngine.addToRoutes(Route);
-
-// console.log($.routerEngine.allRoutes());

@@ -74,7 +74,7 @@ class AuthController extends $.controller {
         await User.query().insert(newUser);
 
         x.with('reg_success', 'Registration successful, Login now!');
-        return x.redirectToRoute('auth.login');
+        return x.redirectToRoute('auth');
     }
 
     logout(x) {
