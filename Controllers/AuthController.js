@@ -20,11 +20,25 @@ class AuthController extends $.controller {
             action: x.get("action", "login")
         };
 
-        return x.view('auth::index', data, false, true);
+        const view = $.$config.get('auth.views.index', 'auth::index');
+
+        let usingEjs = true;
+        if (view !== 'auth::index') {
+            usingEjs = $.$config.get('auth.usingEjs', true);
+        }
+
+        return x.view(view, data, false, usingEjs);
     }
 
     dashboard(x) {
-        return x.view('auth::dashboard', {}, false, true);
+        const view = $.$config.get('auth.views.index', 'auth::dashboard');
+
+        let usingEjs = true;
+        if (view !== 'auth::dashboard') {
+            usingEjs = $.$config.get('auth.usingEjs', true);
+        }
+
+        return x.view(view, {}, false, usingEjs);
     }
 
     async login(x) {

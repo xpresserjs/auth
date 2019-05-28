@@ -1,5 +1,12 @@
 {
   "namespace": "Auth",
+  "config": {
+    "usingEjs": true,
+    "views": {
+      "index": "auth::index",
+      "dashboard": "auth::dashboard"
+    }
+  },
   "paths": {
     "controllers": "Controllers",
     "migrations": "Migrations",
