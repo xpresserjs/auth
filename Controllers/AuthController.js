@@ -3,6 +3,13 @@ const Bcrypt = require("bcrypt");
 
 class AuthController extends $.controller {
 
+    static middleware() {
+        return {
+            'auth': 'dashboard',
+            'auth.guest': ['index', 'login', 'register'],
+        }
+    }
+
     /**
      * Login/Auth Index
      * @param {RequestEngine} x
@@ -30,6 +37,7 @@ class AuthController extends $.controller {
             .where({email})
             .first();
 
+
         if (user === undefined) {
             x.with("login_error", errorMsg);
         } else {
@@ -51,7 +59,7 @@ class AuthController extends $.controller {
             }, logged);
         }
 
-        return x.redirectToRoute($.config.auth.afterLoginRoute);
+        return x.redirectToRoute(logged ? $.config.auth.afterLoginRoute : 'auth');
     }
 
     async register(x) {

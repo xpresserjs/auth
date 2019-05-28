@@ -12,16 +12,18 @@ module.exports = {
      * @return {*}
      */
     allow(x) {
-        if (!x.isLogged())
-            return x.redirectToRoute('auth.index');
+        if (!x.isLogged()){
+            return x.redirectToRoute('auth');
+        }
 
         return x.next()
     },
 
 
     guest(x) {
-        if (x.isLogged())
+        if (x.isLogged()){
             return x.redirectToRoute('auth.dashboard');
+        }
 
         return x.next();
     },
