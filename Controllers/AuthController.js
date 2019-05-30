@@ -73,7 +73,7 @@ class AuthController extends $.controller {
             }, logged);
         }
 
-        return x.redirectToRoute(logged ? $.config.auth.afterLoginRoute : 'auth');
+        return x.redirectToRoute(logged ? $.config.auth.routeAfterLogin : 'auth');
     }
 
     async register(x) {

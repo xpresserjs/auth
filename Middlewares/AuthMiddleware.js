@@ -22,7 +22,7 @@ module.exports = {
 
     guest(x) {
         if (x.isLogged()){
-            return x.redirectToRoute('auth.dashboard');
+            return x.redirectToRoute($.config.auth.routeAfterLogin);
         }
 
         return x.next();
