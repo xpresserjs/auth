@@ -42,10 +42,14 @@ class AuthController extends $.controller {
     }
 
     async login(x) {
-        const email = x.get("login-email", "");
-        const password = x.get("login-password", "");
+        const email = x.get("login-email", false);
+        const password = x.get("login-password", false);
         const errorMsg = "Incorrect email/password combination!";
         let logged = false;
+
+        if (!email || !password) {
+            return this.backToRequest(x, errorMsg, false)
+        }
 
         const user = await User.query()
             .where({email})
@@ -76,23 +80,54 @@ class AuthController extends $.controller {
         return x.redirectToRoute(logged ? $.config.auth.routeAfterLogin : 'auth');
     }
 
+    backToRequest(x, data, proceed) {
+        const returnCode = proceed ? 200 : 400;
+        if (typeof data === "string") {
+            data = {msg: data};
+        }
+
+        if (x.req.xhr) {
+            return x.toApi(data, proceed, returnCode);
+        }
+
+
+        x.res.status(returnCode);
+
+        return x.with(data).withOld().redirectBack();
+    };
+
     async register(x) {
-        const email = x.get("join-email");
+        const email = x.get("join-email", false);
+
+        if (!email) {
+            return this.backToRequest(x, `Email not found.`, false)
+        }
+
+        let password = x.get("join-password", false);
+
+        if (!password) {
+            return this.backToRequest(x, `Password not found.`, false)
+        }
+
+        let name = x.get("join-name", false);
+
+        if (!name) {
+            return this.backToRequest(x, `Name not found.`, false)
+        }
+
         const user = await User.query()
             .where({email})
             .first();
 
         // User Exists
+        let msg = "Email has an account already.";
         if (user !== undefined) {
-            x.with("reg_error", "Email has an account already.");
-            return x.withOld().redirectBack();
+            x.with("reg_error", msg);
+            return this.backToRequest(x, {msg});
         }
 
         // Encrypt User Password
-        const password = Bcrypt.hashSync(x.get("join-password"), 10);
-
-        // Get User Name
-        const name = x.get("join-name");
+        password = Bcrypt.hashSync(password, 10);
 
         // Setup new user data object
         const newUser = {email, password, name};
@@ -100,8 +135,10 @@ class AuthController extends $.controller {
         // Inset new user data object
         await User.query().insert(newUser);
 
-        x.with('reg_success', 'Registration successful, Login now!');
-        return x.redirectToRoute('auth');
+        msg = 'Registration successful, Login now!';
+
+        x.with('reg_success', msg);
+        return this.backToRequest(x, {}, true);
     }
 
     logout(x) {
