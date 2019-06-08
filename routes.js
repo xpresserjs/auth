@@ -2,7 +2,7 @@ const XpresserRouter = require('@xpresser/router');
 const Route = new XpresserRouter('Auth');
 
 Route.path('/auth', () => {
-    Route.get('', 'index');
+    Route.get('=index');
     Route.get('@dashboard');
 
     Route.post('@login');
