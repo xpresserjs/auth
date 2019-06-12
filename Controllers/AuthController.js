@@ -123,7 +123,7 @@ class AuthController extends $.controller {
         let msg = "Email has an account already.";
         if (user !== undefined) {
             x.with("reg_error", msg);
-            return this.backToRequest(x, {msg});
+            return this.backToRequest(x, {msg}, false);
         }
 
         // Encrypt User Password
@@ -138,7 +138,7 @@ class AuthController extends $.controller {
         msg = 'Registration successful, Login now!';
 
         x.with('reg_success', msg);
-        return this.backToRequest(x, {}, true);
+        return this.backToRequest(x, {msg}, true);
     }
 
     logout(x) {
