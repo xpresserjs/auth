@@ -13,6 +13,11 @@ module.exports = {
      */
     allow(x) {
         if (!x.isLogged()){
+
+            if(x.req.xhr){
+                return  x.toApiFalse({msg: "User is not logged"})
+            }
+
             return x.redirectToRoute('auth');
         }
 
@@ -22,6 +27,11 @@ module.exports = {
 
     guest(x) {
         if (x.isLogged()){
+
+            if(x.req.xhr){
+                return  x.toApiFalse({msg: "User is already logged"})
+            }
+
             return x.redirectToRoute($.config.auth.routeAfterLogin);
         }
 
