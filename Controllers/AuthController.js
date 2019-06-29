@@ -47,8 +47,8 @@ class AuthController extends $.controller {
      * @return {Promise<any>}
      */
     async login(x) {
-        const email = x.query("login-email", false);
-        const password = x.query("login-password", false);
+        const email = x.body("login-email", false);
+        const password = x.body("login-password", false);
         const errorMsg = "Incorrect email/password combination!";
         let logged = false;
 
@@ -107,19 +107,19 @@ class AuthController extends $.controller {
      * @return {Promise<void>}
      */
     async register(x) {
-        const email = x.query("join-email", false);
+        const email = x.body("join-email", false);
 
         if (!email) {
             return this.backToRequest(x, `Email not found.`, false)
         }
 
-        let password = x.query("join-password", false);
+        let password = x.body("join-password", false);
 
         if (!password) {
             return this.backToRequest(x, `Password not found.`, false)
         }
 
-        let name = x.query("join-name", false);
+        let name = x.body("join-name", false);
 
         if (!name) {
             return this.backToRequest(x, `Name not found.`, false)
