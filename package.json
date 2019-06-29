@@ -8,10 +8,10 @@
   "license": "MIT",
   "private": false,
   "devDependencies": {
-    "xpresser": "^0.0.7"
+    "xpresser": "^0.0.55"
   },
   "dependencies": {
-    "@xpresser/router": "^0.0.11",
+    "@xpresser/router": "^0.0.12",
     "bcrypt": "^3.0.6"
   }
 }

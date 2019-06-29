@@ -17,7 +17,7 @@ class AuthController extends $.controller {
      */
     index(x) {
         const data = {
-            action: x.get("action", "login")
+            action: x.query("action", "login")
         };
 
         const view = $.$config.get('auth.views.index', 'auth::index');
@@ -41,9 +41,14 @@ class AuthController extends $.controller {
         return x.view(view, {}, false, usingEjs);
     }
 
+    /**
+     * Login
+     * @param {RequestEngine} x
+     * @return {Promise<any>}
+     */
     async login(x) {
-        const email = x.get("login-email", false);
-        const password = x.get("login-password", false);
+        const email = x.query("login-email", false);
+        const password = x.query("login-password", false);
         const errorMsg = "Incorrect email/password combination!";
         let logged = false;
 
@@ -96,20 +101,25 @@ class AuthController extends $.controller {
         return x.with(data).withOld().redirectBack();
     };
 
+    /**
+     * Register
+     * @param {RequestEngine} x
+     * @return {Promise<void>}
+     */
     async register(x) {
-        const email = x.get("join-email", false);
+        const email = x.query("join-email", false);
 
         if (!email) {
             return this.backToRequest(x, `Email not found.`, false)
         }
 
-        let password = x.get("join-password", false);
+        let password = x.query("join-password", false);
 
         if (!password) {
             return this.backToRequest(x, `Password not found.`, false)
         }
 
-        let name = x.get("join-name", false);
+        let name = x.query("join-name", false);
 
         if (!name) {
             return this.backToRequest(x, `Name not found.`, false)
@@ -141,6 +151,11 @@ class AuthController extends $.controller {
         return this.backToRequest(x, {msg}, true);
     }
 
+    /**
+     * Logout
+     * @param {RequestEngine} x
+     * @return {*}
+     */
     logout(x) {
 
         delete x.session.email;
