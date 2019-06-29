@@ -158,8 +158,7 @@ class AuthController extends $.controller {
      */
     logout(x) {
 
-        delete x.session.email;
-        delete x.session.loginKey;
+        x.logout();
 
         x.with({logout: "Logout successful."});
 

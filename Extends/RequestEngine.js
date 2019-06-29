@@ -1,8 +1,12 @@
 const Bcrypt = require("bcrypt");
 const User = $.use.model("Auth/User", true);
 
+/**
+ * AuthRequestEngine
+ * @param {XpresserHttp.Engine} RequestEngine
+ * @return {*}
+ */
 module.exports = function (RequestEngine) {
-
     return class extends RequestEngine {
 
         /**
@@ -55,6 +59,13 @@ module.exports = function (RequestEngine) {
             // @ts-ignore
             return !!Bcrypt.compareSync(email, hash);
         }
-    }
 
+        /**
+         * Delete user session
+         */
+        logout() {
+            delete this.session.email;
+            delete this.session.loginKey;
+        }
+    }
 };
