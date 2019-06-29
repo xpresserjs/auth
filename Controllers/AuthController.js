@@ -12,7 +12,7 @@ class AuthController extends $.controller {
 
     /**
      * Login/Auth Index
-     * @param {RequestEngine} x
+     * @param {XpresserAuth.RequestEngine} x
      * @return {*}
      */
     index(x) {
@@ -43,7 +43,7 @@ class AuthController extends $.controller {
 
     /**
      * Login
-     * @param {RequestEngine} x
+     * @param {XpresserAuth.RequestEngine} x
      * @return {Promise<any>}
      */
     async login(x) {
@@ -103,7 +103,7 @@ class AuthController extends $.controller {
 
     /**
      * Register
-     * @param {RequestEngine} x
+     * @param {XpresserAuth.RequestEngine} x
      * @return {Promise<void>}
      */
     async register(x) {
@@ -153,13 +153,14 @@ class AuthController extends $.controller {
 
     /**
      * Logout
-     * @param {RequestEngine} x
+     * @param {XpresserAuth.RequestEngine} x
      * @return {*}
      */
     logout(x) {
-
+        // log user out.
         x.logout();
 
+        // Return data
         x.with({logout: "Logout successful."});
 
         return x.redirectToRoute("auth");
