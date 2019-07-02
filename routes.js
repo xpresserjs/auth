@@ -12,4 +12,4 @@ Route.path('/auth', () => {
 
 
 // Add Routes
-$.routerEngine.addToRoutes(Route);
+module.exports = Route;

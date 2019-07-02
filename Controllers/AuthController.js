@@ -1,18 +1,26 @@
+/**
+ * Load Config from config.js
+ * Using $.objectCollection
+ * @type {ObjectCollection}
+ */
 const PluginConfig = new ($.objectCollection)(require('../config'));
+
+// Merge with user defined configuration
 PluginConfig.merge(
-    $.$config.get(
-        'plugins[@xpresser/auth]',
-        {}
-    )
+    $.$config.get('plugins[@xpresser/auth]', {})
 );
 
-const User = $.use.model(PluginConfig.get('userModel'));
+// Import User Model
+const User = $.use.model(PluginConfig.get('model'));
 const Bcrypt = require("bcrypt");
 
 class AuthController extends $.controller {
 
     static middleware() {
-        return PluginConfig.get('authControllerMiddleware');
+        return {
+            'auth': 'dashboard',
+            'auth.guest': ['index', 'login', 'register'],
+        };
     }
 
 
@@ -37,8 +45,14 @@ class AuthController extends $.controller {
         return x.view(view, data, false, usingEjs);
     }
 
+
+    /**
+     * Dashboard after Login
+     * @param {XpresserHttp.Engine} x
+     * @return {void | Response }
+     */
     dashboard(x) {
-        const view = PluginConfig.get('views.index');
+        const view = PluginConfig.get('views.dashboard');
 
         let usingEjs = true;
         if (view !== 'auth::dashboard') {
@@ -54,27 +68,22 @@ class AuthController extends $.controller {
      * @return {Promise<*>}
      */
     async login(x) {
-        const loginConfig = PluginConfig.clonePath('login');
+        const loginConfig = PluginConfig.get('login');
 
-        const email = x.body(loginConfig.get('email'), false);
-        const password = x.body(loginConfig.get('password'), false);
+        const email = x.body(loginConfig.email, false);
+        const password = x.body(loginConfig.password, false);
 
         const errorMsg = "Incorrect Email/Password combination!";
         let logged = false;
 
         if (!email || !password) {
+            x.with("login_error", errorMsg);
             return this.backToRequest(x, errorMsg, false)
         }
 
-        const {db_email, db_password} = loginConfig.pick([
-            'db_email',
-            'db_password'
-        ]);
 
         const user = await User.query()
-            .where({
-                [db_email]: email
-            })
+            .where({email})
             .first();
 
 
@@ -86,11 +95,11 @@ class AuthController extends $.controller {
 
             if (Bcrypt.compareSync(
                 password,
-                user[db_password]
+                user.password
             )) {
                 logged = true;
-                x.session.email = $.base64.encode(user[db_email]);
-                x.session.loginKey = $.base64.encode(Bcrypt.hashSync(user[db_email], 10));
+                x.session.email = $.base64.encode(user.email);
+                x.session.loginKey = $.base64.encode(Bcrypt.hashSync(user.email, 10));
                 x.with("login", "Login successful. Welcome to your dashboard!");
             } else {
                 x.with("login_error", errorMsg);
@@ -107,10 +116,22 @@ class AuthController extends $.controller {
             }, logged);
         }
 
-        return x.redirectToRoute(logged ? PluginConfig.get('routeAfterLogin') : 'auth');
+        return x.redirectToRoute(
+            logged ?
+                PluginConfig.get('routes.afterLogin') :
+                PluginConfig.get('routes.login')
+        );
     }
 
+    /**
+     *
+     * @param {XpresserHttp.Engine} x
+     * @param data
+     * @param proceed
+     * @return {*}
+     */
     backToRequest(x, data, proceed) {
+
         const returnCode = proceed ? 200 : 400;
         if (typeof data === "string") {
             data = {msg: data};
@@ -120,6 +141,8 @@ class AuthController extends $.controller {
             return x.toApi(data, proceed, returnCode);
         }
 
+        console.log(data);
+
 
         x.res.status(returnCode);
 
@@ -128,23 +151,25 @@ class AuthController extends $.controller {
 
     /**
      * Register
-     * @param {XpresserAuth.RequestEngine} x
+     * @param {XpresserHttp.Engine} x
      * @return {Promise<void>}
      */
     async register(x) {
-        const email = x.body("join-email", false);
+        const regConfig = PluginConfig.get('register');
+
+        const email = x.body(regConfig.email, false);
 
         if (!email) {
             return this.backToRequest(x, `Email not found.`, false)
         }
 
-        let password = x.body("join-password", false);
+        let password = x.body(regConfig.password, false);
 
         if (!password) {
             return this.backToRequest(x, `Password not found.`, false)
         }
 
-        let name = x.body("join-name", false);
+        let name = x.body(regConfig.name, false);
 
         if (!name) {
             return this.backToRequest(x, `Name not found.`, false)
