@@ -1,14 +1,20 @@
-const User = $.use.model("Auth/User");
+const PluginConfig = new ($.objectCollection)(require('../config'));
+PluginConfig.merge(
+    $.$config.get(
+        'plugins[@xpresser/auth]',
+        {}
+    )
+);
+
+const User = $.use.model(PluginConfig.get('userModel'));
 const Bcrypt = require("bcrypt");
 
 class AuthController extends $.controller {
 
     static middleware() {
-        return {
-            'auth': 'dashboard',
-            'auth.guest': ['index', 'login', 'register'],
-        }
+        return PluginConfig.get('authControllerMiddleware');
     }
+
 
     /**
      * Login/Auth Index
@@ -20,22 +26,23 @@ class AuthController extends $.controller {
             action: x.query("action", "login")
         };
 
-        const view = $.$config.get('auth.views.index', 'auth::index');
+        const view = PluginConfig.get('views.index');
 
         let usingEjs = true;
+
         if (view !== 'auth::index') {
-            usingEjs = $.$config.get('auth.usingEjs', true);
+            usingEjs = PluginConfig.get('usingEjs');
         }
 
         return x.view(view, data, false, usingEjs);
     }
 
     dashboard(x) {
-        const view = $.$config.get('auth.views.index', 'auth::dashboard');
+        const view = PluginConfig.get('views.index');
 
         let usingEjs = true;
         if (view !== 'auth::dashboard') {
-            usingEjs = $.$config.get('auth.usingEjs', true);
+            usingEjs = PluginConfig.get('usingEjs', true);
         }
 
         return x.view(view, {}, false, usingEjs);
@@ -44,37 +51,55 @@ class AuthController extends $.controller {
     /**
      * Login
      * @param {XpresserAuth.RequestEngine} x
-     * @return {Promise<any>}
+     * @return {Promise<*>}
      */
     async login(x) {
-        const email = x.body("login-email", false);
-        const password = x.body("login-password", false);
-        const errorMsg = "Incorrect email/password combination!";
+        const loginConfig = PluginConfig.clonePath('login');
+
+        const email = x.body(loginConfig.get('email'), false);
+        const password = x.body(loginConfig.get('password'), false);
+
+        const errorMsg = "Incorrect Email/Password combination!";
         let logged = false;
 
         if (!email || !password) {
             return this.backToRequest(x, errorMsg, false)
         }
 
+        const {db_email, db_password} = loginConfig.pick([
+            'db_email',
+            'db_password'
+        ]);
+
         const user = await User.query()
-            .where({email})
+            .where({
+                [db_email]: email
+            })
             .first();
 
 
         if (user === undefined) {
+
             x.with("login_error", errorMsg);
+
         } else {
-            if (Bcrypt.compareSync(password, user.password)) {
+
+            if (Bcrypt.compareSync(
+                password,
+                user[db_password]
+            )) {
                 logged = true;
-                x.session.email = $.base64.encode(user.email);
-                x.session.loginKey = $.base64.encode(Bcrypt.hashSync(user.email, 10));
+                x.session.email = $.base64.encode(user[db_email]);
+                x.session.loginKey = $.base64.encode(Bcrypt.hashSync(user[db_email], 10));
                 x.with("login", "Login successful. Welcome to your dashboard!");
             } else {
                 x.with("login_error", errorMsg);
             }
+
         }
 
         // If is xhr request then return json.
+        // noinspection JSUnresolvedVariable
         if (x.req.xhr) {
             return x.toApi({
                 logged,
@@ -82,7 +107,7 @@ class AuthController extends $.controller {
             }, logged);
         }
 
-        return x.redirectToRoute(logged ? $.config.auth.routeAfterLogin : 'auth');
+        return x.redirectToRoute(logged ? PluginConfig.get('routeAfterLogin') : 'auth');
     }
 
     backToRequest(x, data, proceed) {

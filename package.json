@@ -8,7 +8,7 @@
   "license": "MIT",
   "private": false,
   "devDependencies": {
-    "xpresser": "^0.0.55"
+    "xpresser": "^0.0.59"
   },
   "dependencies": {
     "@xpresser/router": "^0.0.12",
