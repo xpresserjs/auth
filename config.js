@@ -3,7 +3,7 @@
  * Using $.objectCollection
  * @type {ObjectCollection}
  */
-const PluginConfig = new ($.objectCollection)({
+const PluginConfig = $.objectCollection({
     usingEjs: true,
     model: "Auth/User",
     templateVariable: "user",
