@@ -1,14 +1,8 @@
 /**
  * Load Config from config.js
- * Using $.objectCollection
  * @type {ObjectCollection}
  */
-const PluginConfig = new ($.objectCollection)(require('../config'));
-
-// Merge with user defined configuration
-PluginConfig.merge(
-    $.$config.get('plugins[@xpresser/auth]', {})
-);
+const PluginConfig = require('../config');
 
 // Import User Model
 const User = $.use.model(PluginConfig.get('model'));
@@ -98,8 +92,10 @@ class AuthController extends $.controller {
                 user.password
             )) {
                 logged = true;
-                x.session.email = $.base64.encode(user.email);
-                x.session.loginKey = $.base64.encode(Bcrypt.hashSync(user.email, 10));
+
+                // Log User In
+                await x.loginUser(email);
+
                 x.with("login", "Login successful. Welcome to your dashboard!");
             } else {
                 x.with("login_error", errorMsg);

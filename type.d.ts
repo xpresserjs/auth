@@ -21,6 +21,13 @@ declare namespace XpresserAuth {
         isLogged(): boolean;
 
         /**
+         * Log User In
+         * Using Email or id.
+         * Sets loginKey session
+         */
+        loginUser(id: string | number): void;
+
+        /**
          * Delete user session
          */
         logout(): void;

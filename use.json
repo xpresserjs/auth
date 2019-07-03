@@ -17,8 +17,5 @@
   },
   "extends": {
     "RequestEngine": "Extends/RequestEngine.js"
-  },
-  "globalMiddlewares": [
-    "GlobalMiddleware"
-  ]
+  }
 }

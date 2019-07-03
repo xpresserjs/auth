@@ -1,4 +1,9 @@
-module.exports = {
+/**
+ * Load Config from config.js
+ * Using $.objectCollection
+ * @type {ObjectCollection}
+ */
+const PluginConfig = new ($.objectCollection)({
     usingEjs: true,
     model: "Auth/User",
     templateVariable: "user",
@@ -23,4 +28,11 @@ module.exports = {
         password: 'join-password',
         name: 'join-name'
     }
-};
+});
+
+// Merge with user defined configuration
+PluginConfig.merge(
+    $.$config.get('plugins[@xpresser/auth]', {})
+);
+
+module.exports = PluginConfig;

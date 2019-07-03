@@ -1,5 +1,9 @@
+const PluginConfig = require('../config');
 const Bcrypt = require("bcrypt");
-const User = $.use.model("Auth/User", true);
+/**
+ * @type {Objection.Model | *}
+ */
+const User = $.use.model(PluginConfig.get('model'), true);
 
 /**
  * AuthRequestEngine
@@ -14,7 +18,7 @@ module.exports = function (RequestEngine) {
          * @returns {*}
          */
         authUser() {
-            return this.res.locals[$.config.auth.templateVariable];
+            return this.res.locals[PluginConfig.get('templateVariable')];
         }
 
         /**
@@ -58,6 +62,23 @@ module.exports = function (RequestEngine) {
 
             // @ts-ignore
             return !!Bcrypt.compareSync(email, hash);
+        }
+
+        async loginUser(id) {
+            let email = id;
+
+            if (typeof id === "number") {
+                const user = await User.query().where({id}).first();
+
+                if (user) {
+                    email = user.email;
+                }
+            }
+
+            console.log(email);
+
+            this.session.email = $.base64.encode(email);
+            this.session.loginKey = $.base64.encode(Bcrypt.hashSync(email, 10));
         }
 
         /**
