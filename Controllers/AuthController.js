@@ -137,9 +137,6 @@ class AuthController extends $.controller {
             return x.toApi(data, proceed, returnCode);
         }
 
-        console.log(data);
-
-
         x.res.status(returnCode);
 
         return x.with(data).withOld().redirectBack();

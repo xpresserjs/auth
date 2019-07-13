@@ -75,8 +75,6 @@ module.exports = function (RequestEngine) {
                 }
             }
 
-            console.log(email);
-
             this.session.email = $.base64.encode(email);
             this.session.loginKey = $.base64.encode(Bcrypt.hashSync(email, 10));
         }
