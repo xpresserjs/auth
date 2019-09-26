@@ -16,7 +16,7 @@
                         <pre class="mt-4 mb-5"><%= JSON.stringify(user, null, 2) %></pre>
 
                         <div class="text-center mt-5">
-                            <a href="<%= route('auth.logout') %>" class="btn btn-block btn-danger">
+                            <a href="<%= ctx.route('auth.logout') %>" class="btn btn-block btn-danger">
                                 Logout (<%= user.name %>)
                             </a>
                         </div>

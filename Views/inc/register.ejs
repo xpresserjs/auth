@@ -1,7 +1,7 @@
-<form class="mb-3" method="post" action="<%= route('auth.register') %>">
+<form class="mb-3" method="post" action="<%= ctx.route('auth.register') %>">
     <div class="form-group">
         <label for="join-email">Email:</label>
-        <input value="<%= old('join-email') %>" type="email" class="form-control shadow-sm" name="join-email"
+        <input value="<%= ctx.old('join-email') %>" type="email" class="form-control shadow-sm" name="join-email"
                placeholder="Email" required>
     </div>
 
@@ -12,7 +12,7 @@
 
     <div class="form-group">
         <label for="join-name">Name:</label>
-        <input value="<%= old('join-name') %>" type="text" class="form-control shadow-sm" name="join-name"
+        <input value="<%= ctx.old('join-name') %>" type="text" class="form-control shadow-sm" name="join-name"
                aria-describedby="joinName" placeholder="Name" required>
     </div>
 
