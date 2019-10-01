@@ -1,7 +1,5 @@
-import RE = require("xpresser/src/RequestEngine");
-
-declare namespace XpresserAuth {
-    class RequestEngine extends RE {
+declare namespace XpresserHttp {
+    interface Engine {
         /**
          * Get Auth User Object
          * @returns {*}

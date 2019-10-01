@@ -58,7 +58,7 @@ class AuthController extends $.controller {
 
     /**
      * Login
-     * @param {XpresserAuth.RequestEngine} x
+     * @param {XpresserHttp.Engine} x
      * @return {Promise<*>}
      */
     async login(x) {
@@ -196,7 +196,7 @@ class AuthController extends $.controller {
 
     /**
      * Logout
-     * @param {XpresserAuth.RequestEngine} x
+     * @param {XpresserHttp.Engine} x
      * @return {*}
      */
     logout(x) {
