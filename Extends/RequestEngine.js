@@ -34,7 +34,7 @@ module.exports = function (RequestEngine) {
 
             const email = $.base64.decode(x.session.email);
 
-            return await User.query().where("email", email).first();
+            return User.query().where("email", email).first();
         }
 
         /**

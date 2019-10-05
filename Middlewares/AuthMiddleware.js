@@ -8,7 +8,7 @@ module.exports = {
 
     /**
      * Default Action for this middleware.
-     * @param {XpresserAuth.RequestEngine} x
+     * @param {XpresserHttp.Engine} x
      * @return {*}
      */
     allow(x) {

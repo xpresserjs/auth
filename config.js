@@ -1,6 +1,4 @@
 /**
- * Load Config from config.js
- * Using $.objectCollection
  * @type {ObjectCollection}
  */
 const PluginConfig = $.objectCollection({
@@ -27,7 +25,13 @@ const PluginConfig = $.objectCollection({
         email: 'join-email',
         password: 'join-password',
         name: 'join-name'
-    }
+    },
+
+    events: {
+        userLoggedIn: 'Auth.userLoggedIn',
+        userLoggedOut: 'Auth.userLoggedOut',
+        userRegistered: 'Auth.userRegistered'
+    },
 });
 
 // Merge with user defined configuration

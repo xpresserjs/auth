@@ -95,6 +95,12 @@ class AuthController extends $.controller {
 
                 // Log User In
                 await x.loginUser(email);
+                // Emit User Logged In Event
+                $.events.emit(
+                    PluginConfig.get('events.userLoggedIn'),
+                    x,
+                    user
+                );
 
                 x.with("login", "Login successful. Welcome to your dashboard!");
             } else {
@@ -186,7 +192,14 @@ class AuthController extends $.controller {
         const newUser = {email, password, name};
 
         // Inset new user data object
-        await User.query().insert(newUser);
+        const RegisteredUser = await User.query().insert(newUser);
+        // Emit Event
+        $.events.emit(
+            PluginConfig.get('events.userRegistered'),
+            x,
+            RegisteredUser
+        );
+
 
         msg = 'Registration successful, Login now!';
 
@@ -200,8 +213,17 @@ class AuthController extends $.controller {
      * @return {*}
      */
     logout(x) {
-        // log user out.
-        x.logout();
+
+        if (x.isLogged()) {
+            const user = x.authUser();
+
+            // log user out.
+            x.logout();
+
+            // Emit Event
+            $.events.emit(PluginConfig.get('events.userLoggedOut'), x, user);
+
+        }
 
         // Return data
         x.with({logout: "Logout successful."});
