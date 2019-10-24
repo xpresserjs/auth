@@ -1,3 +1,6 @@
+const PluginConfig = require("../config");
+const routes = PluginConfig.get("routes");
+
 /*
 *   Name: AuthMiddleware
 *   Exports: function(x) || Object of multiple functions(x)
@@ -32,7 +35,7 @@ module.exports = {
                 return  x.toApiFalse({msg: "User is already logged"})
             }
 
-            return x.redirectToRoute($.config.auth.routeAfterLogin);
+            return x.redirectToRoute(routes.afterLogin);
         }
 
         return x.next();

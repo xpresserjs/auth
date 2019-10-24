@@ -1,5 +1,17 @@
 const PluginConfig = require('../config');
-const Bcrypt = require("bcrypt");
+const Bcrypt = require("bcryptjs");
+
+// Get Session Keys
+// Needed for logout.
+const DefinedSessionKeys = PluginConfig.array("logout.sessionKeys");
+const AllSessionKeys = [
+    ...[
+        'email',
+        'loginKey'
+    ],
+    ...DefinedSessionKeys
+];
+
 /**
  * @type {Objection.Model | *}
  */
@@ -76,15 +88,16 @@ module.exports = function (RequestEngine) {
             }
 
             this.session.email = $.base64.encode(email);
-            this.session.loginKey = $.base64.encode(Bcrypt.hashSync(email, 10));
+            this.session.loginKey = $.base64.encode(Bcrypt.hashSync(email, Bcrypt.genSaltSync(10)));
         }
 
         /**
          * Delete user session
          */
         logout() {
-            delete this.session.email;
-            delete this.session.loginKey;
+            for (const sessionKey of AllSessionKeys) {
+                delete this.session[sessionKey];
+            }
         }
     }
 };

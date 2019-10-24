@@ -1,6 +1,6 @@
 {
   "name": "@xpresser/auth",
-  "version": "0.0.26",
+  "version": "0.1.0",
   "description": "Xpresser Auth Helper",
   "main": "index.js",
   "repository": "https://github.com/xpresserjs/auth.git",
@@ -11,8 +11,8 @@
     "xpresser": "latest"
   },
   "dependencies": {
-    "@xpresser/router": "^0.0.12",
-    "bcrypt": "^3.0.6",
+    "@xpresser/router": "^1.0.2",
+    "bcryptjs": "^2.4.3",
     "lodash": "^4.17.15"
   }
 }

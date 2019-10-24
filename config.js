@@ -32,6 +32,10 @@ const PluginConfig = $.objectCollection({
         userLoggedOut: 'Auth.userLoggedOut',
         userRegistered: 'Auth.userRegistered'
     },
+
+    logout: {
+        sessionKeys: []
+    }
 });
 
 // Merge with user defined configuration

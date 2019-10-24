@@ -6,7 +6,7 @@ const PluginConfig = require('../config');
 
 // Import User Model
 const User = $.use.model(PluginConfig.get('model'));
-const Bcrypt = require("bcrypt");
+const Bcrypt = require("bcryptjs");
 
 class AuthController extends $.controller {
 
@@ -20,7 +20,7 @@ class AuthController extends $.controller {
 
     /**
      * Login/Auth Index
-     * @param {XpresserAuth.RequestEngine} x
+     * @param {XpresserHttp.Engine} x
      * @return {*}
      */
     index(x) {
@@ -186,7 +186,7 @@ class AuthController extends $.controller {
         }
 
         // Encrypt User Password
-        password = Bcrypt.hashSync(password, 10);
+        password = Bcrypt.hashSync(password, Bcrypt.genSaltSync(10));
 
         // Setup new user data object
         const newUser = {email, password, name};
