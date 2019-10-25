@@ -1,5 +1,7 @@
 # Xpresser Auth Plugin
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/xpresserjs/auth.svg)](https://greenkeeper.io/)
+
 An Auth Plugin for xpresser.
 
 ## What you get?
