@@ -6,7 +6,7 @@ const PluginConfig = require('../config');
 
 // Import User Model
 const User = $.use.model(PluginConfig.get('model'));
-const Bcrypt = require("bcryptjs");
+const bcrypt = require("bcryptjs");
 
 class AuthController extends $.controller {
 
@@ -87,7 +87,7 @@ class AuthController extends $.controller {
 
         } else {
 
-            if (Bcrypt.compareSync(
+            if (bcrypt.compareSync(
                 password,
                 user.password
             )) {
@@ -186,7 +186,7 @@ class AuthController extends $.controller {
         }
 
         // Encrypt User Password
-        password = Bcrypt.hashSync(password, Bcrypt.genSaltSync(10));
+        password = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
 
         // Setup new user data object
         const newUser = {email, password, name};

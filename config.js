@@ -4,6 +4,7 @@
 const PluginConfig = $.objectCollection({
     usingEjs: true,
     model: "Auth/User",
+    modelWhere: "email",
     templateVariable: "user",
 
     routes: {
@@ -33,9 +34,15 @@ const PluginConfig = $.objectCollection({
         userRegistered: 'Auth.userRegistered'
     },
 
+    session: {
+        login: [],
+        logout: [],
+        registered: []
+    },
+
     logout: {
         sessionKeys: []
-    }
+    },
 });
 
 // Merge with user defined configuration

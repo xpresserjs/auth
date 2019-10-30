@@ -1,14 +1,16 @@
 const PluginConfig = require('../config');
-const Bcrypt = require("bcryptjs");
+const bcrypt = require("bcryptjs");
+const modelWhere = PluginConfig.get('modelWhere', 'email');
 
 // Get Session Keys
 // Needed for logout.
-const DefinedSessionKeys = PluginConfig.array("logout.sessionKeys");
+const DefaultSessionKeys = ['publicKey', 'publicHash'];
+
+const DefinedSessionKeys = PluginConfig.array("session.logout");
+const LoginSessionKeys = PluginConfig.array("session.login");
+
 const AllSessionKeys = [
-    ...[
-        'email',
-        'loginKey'
-    ],
+    ...DefaultSessionKeys,
     ...DefinedSessionKeys
 ];
 
@@ -38,15 +40,12 @@ module.exports = function (RequestEngine) {
          * @return {Promise<null|*>}
          */
         async auth() {
-            const x = this;
-
-            if (!x.isLogged()) {
+            if (!this.isLogged()) {
                 return null;
             }
 
-            const email = $.base64.decode(x.session.email);
-
-            return User.query().where("email", email).first();
+            const publicKey = $.base64.decodeToJson(this.session.publicKey);
+            return User.query().where(modelWhere, publicKey.key).first();
         }
 
         /**
@@ -63,32 +62,35 @@ module.exports = function (RequestEngine) {
                 return true;
             }
 
-            const x = this;
+            const session = $.objectCollection(this.session);
 
-            if (typeof x.session.email === "undefined" || typeof x.session.loginKey === "undefined") {
+            if (!session.exists([...DefaultSessionKeys, ...LoginSessionKeys])) {
                 return false;
             }
 
-            const email = $.base64.decode(x.session.email);
-            const hash = $.base64.decode(x.session.loginKey);
+            const keyAndValue = $.base64.decodeToJson(session.get('publicKey', {key: "", value: ""}));
+            const unHashed = $.base64.decode(session.get('publicHash', 'none'));
+
 
             // @ts-ignore
-            return !!Bcrypt.compareSync(email, hash);
+            return unHashed === `${keyAndValue.key}:${keyAndValue.value}`
         }
 
         async loginUser(id) {
-            let email = id;
+            let modelWhereValue = id;
 
             if (typeof id === "number") {
                 const user = await User.query().where({id}).first();
 
                 if (user) {
-                    email = user.email;
+                    modelWhereValue = user[modelWhere];
                 }
             }
 
-            this.session.email = $.base64.encode(email);
-            this.session.loginKey = $.base64.encode(Bcrypt.hashSync(email, Bcrypt.genSaltSync(10)));
+            const time = $.helpers.now();
+
+            this.session.publicKey = $.base64.encode({key: modelWhereValue, value: time});
+            this.session.publicHash = $.base64.encode(modelWhereValue + ':' + time);
         }
 
         /**
