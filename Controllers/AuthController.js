@@ -20,12 +20,12 @@ class AuthController extends $.controller {
 
     /**
      * Login/Auth Index
-     * @param {XpresserHttp.Engine} x
+     * @param {Xpresser.Http} http
      * @return {*}
      */
-    index(x) {
+    index(http) {
         const data = {
-            action: x.query("action", "login")
+            action: http.query("action", "login")
         };
 
         const view = PluginConfig.get('views.index');
@@ -36,16 +36,16 @@ class AuthController extends $.controller {
             usingEjs = PluginConfig.get('usingEjs');
         }
 
-        return x.view(view, data, false, usingEjs);
+        return http.view(view, data, false, usingEjs);
     }
 
 
     /**
      * Dashboard after Login
-     * @param {XpresserHttp.Engine} x
+     * @param {Xpresser.Http} http
      * @return {void | Response }
      */
-    dashboard(x) {
+    dashboard(http) {
         const view = PluginConfig.get('views.dashboard');
 
         let usingEjs = true;
@@ -53,26 +53,26 @@ class AuthController extends $.controller {
             usingEjs = PluginConfig.get('usingEjs', true);
         }
 
-        return x.view(view, {}, false, usingEjs);
+        return http.view(view, {}, false, usingEjs);
     }
 
     /**
      * Login
-     * @param {XpresserHttp.Engine} x
+     * @param {Xpresser.Http} http
      * @return {Promise<*>}
      */
-    async login(x) {
+    async login(http) {
         const loginConfig = PluginConfig.get('login');
 
-        const email = x.body(loginConfig.email, false);
-        const password = x.body(loginConfig.password, false);
+        const email = http.body(loginConfig.email, false);
+        const password = http.body(loginConfig.password, false);
 
         const errorMsg = "Incorrect Email/Password combination!";
         let logged = false;
 
         if (!email || !password) {
-            x.with("login_error", errorMsg);
-            return this.backToRequest(x, errorMsg, false)
+            http.with("login_error", errorMsg);
+            return this.backToRequest(http, errorMsg, false)
         }
 
 
@@ -83,7 +83,7 @@ class AuthController extends $.controller {
 
         if (user === undefined) {
 
-            x.with("login_error", errorMsg);
+            http.with("login_error", errorMsg);
 
         } else {
 
@@ -94,31 +94,31 @@ class AuthController extends $.controller {
                 logged = true;
 
                 // Log User In
-                await x.loginUser(email);
+                await http.loginUser(email);
                 // Emit User Logged In Event
                 $.events.emit(
                     PluginConfig.get('events.userLoggedIn'),
-                    x,
+                    http,
                     user
                 );
 
-                x.with("login", "Login successful. Welcome to your dashboard!");
+                http.with("login", "Login successful. Welcome to your dashboard!");
             } else {
-                x.with("login_error", errorMsg);
+                http.with("login_error", errorMsg);
             }
 
         }
 
         // If is xhr request then return json.
         // noinspection JSUnresolvedVariable
-        if (x.req.xhr) {
-            return x.toApi({
+        if (http.req.xhr) {
+            return http.toApi({
                 logged,
                 msg: logged ? 'Login Successful.' : errorMsg,
             }, logged);
         }
 
-        return x.redirectToRoute(
+        return http.redirectToRoute(
             logged ?
                 PluginConfig.get('routes.afterLogin') :
                 PluginConfig.get('routes.login')
@@ -127,51 +127,51 @@ class AuthController extends $.controller {
 
     /**
      *
-     * @param {XpresserHttp.Engine} x
+     * @param {Xpresser.Http} http
      * @param data
      * @param proceed
      * @return {*}
      */
-    backToRequest(x, data, proceed) {
+    backToRequest(http, data, proceed) {
 
         const returnCode = proceed ? 200 : 400;
         if (typeof data === "string") {
             data = {msg: data};
         }
 
-        if (x.req.xhr) {
-            return x.toApi(data, proceed, returnCode);
+        if (http.req.xhr) {
+            return http.toApi(data, proceed, returnCode);
         }
 
-        x.res.status(returnCode);
+        http.res.status(returnCode);
 
-        return x.with(data).withOld().redirectBack();
+        return http.with(data).withOld().redirectBack();
     };
 
     /**
      * Register
-     * @param {XpresserHttp.Engine} x
+     * @param {Xpresser.Http} http
      * @return {Promise<void>}
      */
-    async register(x) {
+    async register(http) {
         const regConfig = PluginConfig.get('register');
 
-        const email = x.body(regConfig.email, false);
+        const email = http.body(regConfig.email, false);
 
         if (!email) {
-            return this.backToRequest(x, `Email not found.`, false)
+            return this.backToRequest(http, `Email not found.`, false)
         }
 
-        let password = x.body(regConfig.password, false);
+        let password = http.body(regConfig.password, false);
 
         if (!password) {
-            return this.backToRequest(x, `Password not found.`, false)
+            return this.backToRequest(http, `Password not found.`, false)
         }
 
-        let name = x.body(regConfig.name, false);
+        let name = http.body(regConfig.name, false);
 
         if (!name) {
-            return this.backToRequest(x, `Name not found.`, false)
+            return this.backToRequest(http, `Name not found.`, false)
         }
 
         const user = await User.query()
@@ -181,8 +181,8 @@ class AuthController extends $.controller {
         // User Exists
         let msg = "Email has an account already.";
         if (user !== undefined) {
-            x.with("reg_error", msg);
-            return this.backToRequest(x, {msg}, false);
+            http.with("reg_error", msg);
+            return this.backToRequest(http, {msg}, false);
         }
 
         // Encrypt User Password
@@ -196,39 +196,40 @@ class AuthController extends $.controller {
         // Emit Event
         $.events.emit(
             PluginConfig.get('events.userRegistered'),
-            x,
+            http,
             RegisteredUser
         );
 
 
         msg = 'Registration successful, Login now!';
 
-        x.with('reg_success', msg);
-        return this.backToRequest(x, {msg}, true);
+        http.with('reg_success', msg);
+        return this.backToRequest(http, {msg}, true);
     }
 
     /**
      * Logout
-     * @param {XpresserHttp.Engine} x
+     * @param {Xpresser.Http} http
      * @return {*}
      */
-    logout(x) {
+    logout(http) {
 
-        if (x.isLogged()) {
-            const user = x.authUser();
+
+        if (http.isLogged()) {
+            const user = http.authUser();
 
             // log user out.
-            x.logout();
+            http.logout();
 
             // Emit Event
-            $.events.emit(PluginConfig.get('events.userLoggedOut'), x, user);
+            $.events.emit(PluginConfig.get('events.userLoggedOut'), http, user);
 
         }
 
         // Return data
-        x.with({logout: "Logout successful."});
+        http.with({logout: "Logout successful."});
 
-        return x.redirectToRoute("auth");
+        return http.redirectToRoute("auth");
     }
 }
 

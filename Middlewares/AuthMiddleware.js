@@ -11,33 +11,37 @@ module.exports = {
 
     /**
      * Default Action for this middleware.
-     * @param {XpresserHttp.Engine} x
+     * @param {Xpresser.Http} http
      * @return {*}
      */
-    allow(x) {
-        if (!x.isLogged()){
+    allow(http) {
+        if (!http.isLogged()){
 
-            if(x.req.xhr){
-                return  x.toApiFalse({msg: "User is not logged"})
+            if(http.req.xhr){
+                return  http.toApiFalse({msg: "User is not logged"})
             }
 
-            return x.redirectToRoute('auth');
+            return http.redirectToRoute('auth');
         }
 
-        return x.next()
+        return http.next()
     },
 
+    /**
+     * Guest Action for this middleware.
+     * @param {Xpresser.Http} http
+     * @return {*}
+     */
+    guest(http) {
+        if (http.isLogged()){
 
-    guest(x) {
-        if (x.isLogged()){
-
-            if(x.req.xhr){
-                return  x.toApiFalse({msg: "User is already logged"})
+            if(http.req.xhr){
+                return  http.toApiFalse({msg: "User is already logged"})
             }
 
-            return x.redirectToRoute(routes.afterLogin);
+            return http.redirectToRoute(routes.afterLogin);
         }
 
-        return x.next();
+        return http.next();
     },
 };

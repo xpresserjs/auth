@@ -1,13 +1,18 @@
 const PluginConfig = require("../config");
 const templateVariable = PluginConfig.get('templateVariable');
 
-module.exports = async (x) => {
+/**
+ *
+ * @param {Xpresser.Http} http
+ * @returns {*}
+ */
+module.exports = async (http) => {
 
-    if (x.isLogged()) {
-        x.res.locals[templateVariable] = await x.auth();
+    if (http.isLogged()) {
+        http.res.locals[templateVariable] = await http.auth();
     } else {
-        x.res.locals[templateVariable] = undefined;
+        http.res.locals[templateVariable] = undefined;
     }
 
-    return x.next();
+    return http.next();
 };

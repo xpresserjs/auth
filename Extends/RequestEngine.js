@@ -21,7 +21,7 @@ const User = $.use.model(PluginConfig.get('model'), true);
 
 /**
  * AuthRequestEngine
- * @param {XpresserHttp.Engine} RequestEngine
+ * @param {Xpresser.Http} RequestEngine
  * @return {*}
  */
 module.exports = function (RequestEngine) {

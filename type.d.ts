@@ -1,5 +1,5 @@
-declare namespace XpresserHttp {
-    interface Engine {
+declare namespace Xpresser {
+    interface Http {
         /**
          * Get Auth User Object
          * @returns {*}
@@ -31,3 +31,5 @@ declare namespace XpresserHttp {
         logout(): void;
     }
 }
+
+export = Xpresser;
