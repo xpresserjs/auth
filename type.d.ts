@@ -31,5 +31,3 @@ declare namespace Xpresser {
         logout(): void;
     }
 }
-
-export = Xpresser;
