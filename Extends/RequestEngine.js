@@ -1,5 +1,4 @@
 const PluginConfig = require('../config');
-const bcrypt = require("bcryptjs");
 const modelWhere = PluginConfig.get('modelWhere', 'email');
 
 // Get Session Keys
@@ -44,7 +43,7 @@ module.exports = function (RequestEngine) {
                 return null;
             }
 
-            const publicKey = $.base64.decodeToJson(this.session.publicKey);
+            const publicKey = $.base64.decodeToObject(this.session.publicKey);
             return User.query().where(modelWhere, publicKey.key).first();
         }
 
@@ -68,7 +67,7 @@ module.exports = function (RequestEngine) {
                 return false;
             }
 
-            const keyAndValue = $.base64.decodeToJson(session.get('publicKey', {key: "", value: ""}));
+            const keyAndValue = $.base64.decodeToObject(session.get('publicKey', {key: "", value: ""}));
             const unHashed = $.base64.decode(session.get('publicHash', 'none'));
 
 
@@ -82,9 +81,7 @@ module.exports = function (RequestEngine) {
             if (typeof id === "number") {
                 const user = await User.query().where({id}).first();
 
-                if (user) {
-                    modelWhereValue = user[modelWhere];
-                }
+                if (user) modelWhereValue = user[modelWhere];
             }
 
             const time = $.helpers.now();
