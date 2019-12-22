@@ -1,5 +1,7 @@
 const PluginConfig = require('../config');
 const modelWhere = PluginConfig.get('modelWhere', 'email');
+const modelDataProvider = PluginConfig.get('modelDataProvider');
+
 
 // Get Session Keys
 // Needed for logout.
@@ -17,6 +19,7 @@ const AllSessionKeys = [
  * @type {Objection.Model | *}
  */
 const User = $.use.model(PluginConfig.get('model'), true);
+
 
 /**
  * AuthRequestEngine
@@ -44,7 +47,7 @@ module.exports = function (RequestEngine) {
             }
 
             const publicKey = $.base64.decodeToObject(this.session.publicKey);
-            return User.query().where(modelWhere, publicKey.key).first();
+            return User[modelDataProvider](publicKey);
         }
 
         /**
@@ -78,8 +81,14 @@ module.exports = function (RequestEngine) {
         async loginUser(id) {
             let modelWhereValue = id;
 
+
             if (typeof id === "number") {
-                const user = await User.query().where({id}).first();
+                let user;
+                try{
+                    user = await User[modelDataProvider]();
+                } catch (e) {
+                    throw Error(e)
+                }
 
                 if (user) modelWhereValue = user[modelWhere];
             }

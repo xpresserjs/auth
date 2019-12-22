@@ -3,6 +3,11 @@
  * @type {ObjectCollection}
  */
 const PluginConfig = require('../config');
+const ModelPasswordProvider = PluginConfig.get('modelPasswordProvider');
+const ModelDataProvider = PluginConfig.get('modelDataProvider');
+const ModelRegisterHandler = PluginConfig.get('modelRegisterHandler');
+
+
 
 // Import User Model
 const User = $.use.model(PluginConfig.get('model'));
@@ -76,12 +81,15 @@ class AuthController extends $.controller {
         }
 
 
-        const user = await User.query()
-            .where({email})
-            .first();
+        let user_password;
+        // try {
+            user_password = await User[ModelPasswordProvider](email);
+        // } catch (e) {
+        //     throw Error(e)
+        // }
 
 
-        if (user === undefined) {
+        if (!user_password) {
 
             http.with("login_error", errorMsg);
 
@@ -89,7 +97,7 @@ class AuthController extends $.controller {
 
             if (bcrypt.compareSync(
                 password,
-                user.password
+                user_password
             )) {
                 logged = true;
 
@@ -99,7 +107,7 @@ class AuthController extends $.controller {
                 $.events.emit(
                     PluginConfig.get('events.userLoggedIn'),
                     http,
-                    user
+                    email
                 );
 
                 http.with("login", "Login successful. Welcome to your dashboard!");
@@ -174,13 +182,11 @@ class AuthController extends $.controller {
             return this.backToRequest(http, `Name not found.`, false)
         }
 
-        const user = await User.query()
-            .where({email})
-            .first();
+        const user = await User[ModelDataProvider](email);
 
         // User Exists
         let msg = "Email has an account already.";
-        if (user !== undefined) {
+        if (user) {
             http.with("reg_error", msg);
             return this.backToRequest(http, {msg}, false);
         }
@@ -192,7 +198,7 @@ class AuthController extends $.controller {
         const newUser = {email, password, name};
 
         // Inset new user data object
-        const RegisteredUser = await User.query().insert(newUser);
+        const RegisteredUser = await User[ModelRegisterHandler](newUser);
         // Emit Event
         $.events.emit(
             PluginConfig.get('events.userRegistered'),

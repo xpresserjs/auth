@@ -5,6 +5,9 @@ const PluginConfig = $.objectCollection({
     usingEjs: true,
     model: "Auth/User",
     modelWhere: "email",
+    modelPasswordProvider: "authPasswordProvider",
+    modelDataProvider: "authDataProvider",
+    modelRegisterHandler: "authRegisterHandler",
     templateVariable: "user",
 
     routes: {
