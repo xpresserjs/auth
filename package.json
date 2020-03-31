@@ -8,10 +8,10 @@
   "license": "MIT",
   "private": false,
   "devDependencies": {
-    "xpresser": "^0.1.69"
+    "xpresser": "^0.2.15"
   },
   "dependencies": {
-    "@xpresser/router": "^1.0.3",
+    "@xpresser/router": "^1.0.7",
     "bcryptjs": "^2.4.3",
     "lodash": "^4.17.15"
   }

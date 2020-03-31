@@ -199,6 +199,11 @@ class AuthController extends $.controller {
 
         // Inset new user data object
         const RegisteredUser = await User[ModelRegisterHandler](newUser);
+
+        if(!RegisteredUser){
+            throw Error('ModelRegisterHandler: returned nothing or false')
+        }
+
         // Emit Event
         $.events.emit(
             PluginConfig.get('events.userRegistered'),
