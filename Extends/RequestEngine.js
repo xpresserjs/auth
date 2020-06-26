@@ -58,7 +58,7 @@ module.exports = function (RequestEngine) {
             /*
             * If authUser has been set before then return true.
             * Prevents Bcrypt from running twice.
-            * ThereBy increasing runtime.
+            * ThereBy reducing runtime.
             */
             if (this.authUser() !== undefined) {
                 return true;
@@ -78,9 +78,13 @@ module.exports = function (RequestEngine) {
             return unHashed === `${keyAndValue.key}:${keyAndValue.value}`
         }
 
+        /**
+         * Login a user using id
+         * @param id
+         * @return {Promise<void>}
+         */
         async loginUser(id) {
             let modelWhereValue = id;
-
 
             if (typeof id === "number") {
                 let user;

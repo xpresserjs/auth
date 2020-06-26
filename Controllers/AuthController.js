@@ -8,7 +8,6 @@ const ModelDataProvider = PluginConfig.get('modelDataProvider');
 const ModelRegisterHandler = PluginConfig.get('modelRegisterHandler');
 
 
-
 // Import User Model
 const User = $.use.model(PluginConfig.get('model'));
 const bcrypt = require("bcryptjs");
@@ -81,14 +80,7 @@ class AuthController extends $.controller {
         }
 
 
-        let user_password;
-        // try {
-            user_password = await User[ModelPasswordProvider](email);
-        // } catch (e) {
-        //     throw Error(e)
-        // }
-
-
+        let user_password = await User[ModelPasswordProvider](email);
         if (!user_password) {
 
             http.with("login_error", errorMsg);
@@ -200,7 +192,7 @@ class AuthController extends $.controller {
         // Inset new user data object
         const RegisteredUser = await User[ModelRegisterHandler](newUser);
 
-        if(!RegisteredUser){
+        if (!RegisteredUser) {
             throw Error('ModelRegisterHandler: returned nothing or false')
         }
 

@@ -15,10 +15,10 @@ module.exports = {
      * @return {*}
      */
     allow(http) {
-        if (!http.isLogged()){
+        if (!http.isLogged()) {
 
-            if(http.req.xhr){
-                return  http.toApiFalse({msg: "User is not logged"})
+            if (http.req.xhr) {
+                return http.toApiFalse({msg: "User is not logged"})
             }
 
             return http.redirectToRoute('auth');
@@ -33,10 +33,10 @@ module.exports = {
      * @return {*}
      */
     guest(http) {
-        if (http.isLogged()){
+        if (http.isLogged()) {
 
-            if(http.req.xhr){
-                return  http.toApiFalse({msg: "User is already logged"})
+            if (http.req.xhr) {
+                return http.toApiFalse({msg: "User is already logged"})
             }
 
             return http.redirectToRoute(routes.afterLogin);
