@@ -21,13 +21,19 @@ yarn add @xpresser/auth
 ```
 
 ## Configure
+The Default Configuration file can be imported into your project using the xjs-cli `publish` command.
+```sh
+xjs publish Auth configs
+```
+The above command will publish the configs file of this plugin into your configs folder.
+Then you can include it in your xpresser config like so:
 ```javascript
+const authPluginConfig = require('./backend/configs/Auth/config');
+
 const config = {
     // .... other configs above ....
     plugins: {
-        '@xpresser/auth': {
-            model: 'User'
-        }
+        '@xpresser/auth': authPluginConfig
     }
 }
 ```
@@ -114,7 +120,7 @@ class User {
     }
 }
 ```
-The data returned is passed to the `events.userRegistered` event so you can so more.
+The data returned is passed to the `events.userRegistered` event, given you opportunity to do more with the request and formData received.
 
 
 
