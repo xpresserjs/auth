@@ -9,13 +9,14 @@
   },
   "paths": {
     "controllers": "Controllers",
-    "migrations": "Migrations",
     "middlewares": "Middlewares",
     "views": "Views",
-    "models": "Models",
     "routesFile": "routes.js"
   },
   "extends": {
     "RequestEngine": "Extends/RequestEngine.js"
+  },
+  "publishable": {
+    "configs": "Configs"
   }
 }

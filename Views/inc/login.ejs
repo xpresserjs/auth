@@ -1,16 +1,15 @@
 <form class="mb-3" method="post" action="<%= ctx.route('auth.login') %>">
     <div class="form-group">
-        <label for="login-email">Email</label>
+        <label for="<%=form.primaryKey%>">Email</label>
         <input type="email" class="form-control shadow-sm"
-               name="login-email"
-               id="login-email"
-               aria-describedby="loginEmail" placeholder="Email" required>
+               name="<%=form.primaryKey%>"
+               id="<%=form.primaryKey%>" placeholder="Email" required>
     </div>
     <div class="form-group">
-        <label for="login-password">Password</label>
+        <label for="<%=form.password%>">Password</label>
         <input type="password" class="form-control shadow-sm"
-               name="login-password"
-               id="login-password"
+               name="<%=form.password%>"
+               id="<%=form.password%>"
                placeholder="Password" required>
     </div>
     <div class="text-center">

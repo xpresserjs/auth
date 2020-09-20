@@ -29,15 +29,21 @@ class AuthController extends $.controller {
      */
     index(http) {
         const data = {
-            action: http.query("action", "login")
+            action: http.query("action", "login"),
         };
+
+        if (data.action === 'register') {
+            data['form'] = PluginConfig.get('register')
+        } else {
+            data['form'] = PluginConfig.get('login')
+        }
 
         const view = PluginConfig.get('views.index');
 
         let usingEjs = true;
 
         if (view !== 'auth::index') {
-            usingEjs = PluginConfig.get('usingEjs');
+            usingEjs = PluginConfig.get('usingEjs', usingEjs);
         }
 
         return http.view(view, data, false, usingEjs);
@@ -66,21 +72,26 @@ class AuthController extends $.controller {
      * @return {Promise<*>}
      */
     async login(http) {
-        const loginConfig = PluginConfig.get('login');
+        if (typeof User[ModelPasswordProvider] !== "function") {
+            throw new Error(`Method {${ModelPasswordProvider}} does not exits in defined Auth Model."`)
+        }
 
-        const email = http.body(loginConfig.email, false);
+        const loginConfig = PluginConfig.get('login');
+        const modelPrimaryKey = PluginConfig.get('modelPrimaryKey');
+
+        const primaryKeyValue = http.body(loginConfig.primaryKey, false);
         const password = http.body(loginConfig.password, false);
 
         const errorMsg = "Incorrect Email/Password combination!";
         let logged = false;
 
-        if (!email || !password) {
+        if (!primaryKeyValue || !password) {
             http.with("login_error", errorMsg);
             return this.backToRequest(http, errorMsg, false)
         }
 
+        let user_password = await User[ModelPasswordProvider](primaryKeyValue, modelPrimaryKey);
 
-        let user_password = await User[ModelPasswordProvider](email);
         if (!user_password) {
 
             http.with("login_error", errorMsg);
@@ -94,12 +105,12 @@ class AuthController extends $.controller {
                 logged = true;
 
                 // Log User In
-                await http.loginUser(email);
+                await http.loginUser(primaryKeyValue);
                 // Emit User Logged In Event
                 $.events.emit(
                     PluginConfig.get('events.userLoggedIn'),
                     http,
-                    email
+                    primaryKeyValue
                 );
 
                 http.with("login", "Login successful. Welcome to your dashboard!");
@@ -154,11 +165,21 @@ class AuthController extends $.controller {
      * @return {Promise<void>}
      */
     async register(http) {
+
+        if (typeof User[ModelDataProvider] !== "function") {
+            throw new Error(`Method {${ModelDataProvider}} does not exits in defined Auth Model."`)
+        }
+
+        if (typeof User[ModelRegisterHandler] !== "function") {
+            throw new Error(`Method {${ModelRegisterHandler}} does not exits in defined Auth Model."`)
+        }
+
         const regConfig = PluginConfig.get('register');
+        const modelPrimaryKey = PluginConfig.get('modelPrimaryKey');
 
-        const email = http.body(regConfig.email, false);
+        const primaryKeyValue = http.body(regConfig.primaryKey, false);
 
-        if (!email) {
+        if (!primaryKeyValue) {
             return this.backToRequest(http, `Email not found.`, false)
         }
 
@@ -174,7 +195,7 @@ class AuthController extends $.controller {
             return this.backToRequest(http, `Name not found.`, false)
         }
 
-        const user = await User[ModelDataProvider](email);
+        const user = await User[ModelDataProvider](primaryKeyValue, modelPrimaryKey);
 
         // User Exists
         let msg = "Email has an account already.";
@@ -187,7 +208,7 @@ class AuthController extends $.controller {
         password = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
 
         // Setup new user data object
-        const newUser = {email, password, name};
+        const newUser = {[modelPrimaryKey]: primaryKeyValue, password, name};
 
         // Inset new user data object
         const RegisteredUser = await User[ModelRegisterHandler](newUser);
@@ -202,7 +223,6 @@ class AuthController extends $.controller {
             http,
             RegisteredUser
         );
-
 
         msg = 'Registration successful, Login now!';
 

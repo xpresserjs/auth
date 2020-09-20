@@ -1,5 +1,5 @@
 const PluginConfig = require('../config');
-const modelWhere = PluginConfig.get('modelWhere', 'email');
+const modelPrimaryKey = PluginConfig.get('modelPrimaryKey', 'email');
 const modelDataProvider = PluginConfig.get('modelDataProvider');
 
 
@@ -84,7 +84,7 @@ module.exports = function (RequestEngine) {
          * @return {Promise<void>}
          */
         async loginUser(id) {
-            let modelWhereValue = id;
+            let modelPrimaryKeyValue = id;
 
             if (typeof id === "number") {
                 let user;
@@ -94,13 +94,13 @@ module.exports = function (RequestEngine) {
                     throw Error(e)
                 }
 
-                if (user) modelWhereValue = user[modelWhere];
+                if (user) modelPrimaryKeyValue = user[modelPrimaryKey];
             }
 
             const time = $.helpers.now();
 
-            this.session.publicKey = $.base64.encode({key: modelWhereValue, value: time});
-            this.session.publicHash = $.base64.encode(modelWhereValue + ':' + time);
+            this.session.publicKey = $.base64.encode({key: modelPrimaryKeyValue, value: time});
+            this.session.publicHash = $.base64.encode(modelPrimaryKeyValue + ':' + time);
         }
 
         /**
