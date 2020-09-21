@@ -1,0 +1,26 @@
+<form class="mb-3" method="post" action="<%= ctx.route('auth.login') %>">
+    <div class="form-group">
+        <label for="<%=form.primaryKey%>">Email</label>
+        <input type="email" class="form-control shadow-sm"
+               name="<%=form.primaryKey%>"
+               id="<%=form.primaryKey%>" placeholder="Email" required>
+    </div>
+    <div class="form-group">
+        <label for="<%=form.password%>">Password</label>
+        <input type="password" class="form-control shadow-sm"
+               name="<%=form.password%>"
+               id="<%=form.password%>"
+               placeholder="Password" required>
+    </div>
+    <div class="text-center">
+        <button type="submit" class="btn btn-danger">
+            Login
+        </button>
+        <span class="ml-2 mr-2 text-muted">
+                                            OR
+                                        </span>
+        <a href="?action=register" class="btn btn-secondary">
+            Register
+        </a>
+    </div>
+</form>

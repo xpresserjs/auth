@@ -1,0 +1,22 @@
+{
+  "namespace": "Auth",
+  "config": {
+    "usingEjs": true,
+    "views": {
+      "index": "auth::index",
+      "dashboard": "auth::dashboard"
+    }
+  },
+  "paths": {
+    "controllers": "Controllers",
+    "middlewares": "Middlewares",
+    "views": "Views",
+    "routesFile": "routes.js"
+  },
+  "extends": {
+    "RequestEngine": "Extends/RequestEngine.js"
+  },
+  "publishable": {
+    "configs": "Configs"
+  }
+}

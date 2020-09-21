@@ -1,0 +1,25 @@
+<% if(ctx.$flash.logout){ %>
+    <div class="alert alert-success" role="alert">
+        <%= ctx.$flash.logout %>
+    </div>
+<% } %>
+<% if(ctx.$flash.login){ %>
+    <div class="alert alert-success mt-2" role="alert">
+        <%= ctx.$flash.login %>
+    </div>
+<% } %>
+<% if(ctx.$flash.login_error){ %>
+    <div class="alert alert-danger" role="alert">
+        <%= ctx.$flash.login_error %>
+    </div>
+<% } %>
+<% if(ctx.$flash.reg_success){ %>
+    <div class="alert alert-success" role="alert">
+        <%= ctx.$flash.reg_success %>
+    </div>
+<% } %>
+<% if(ctx.$flash.reg_error){ %>
+    <div class="alert alert-danger" role="alert">
+        <%= ctx.$flash.reg_error %>
+    </div>
+<% } %>
