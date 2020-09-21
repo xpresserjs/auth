@@ -104,7 +104,7 @@ module.exports = function (RequestEngine) {
         }
 
         /**
-         * Delete user session
+         * Delete user sessions
          */
         logout() {
             for (const sessionKey of AllSessionKeys) {
