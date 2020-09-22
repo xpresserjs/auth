@@ -17,6 +17,7 @@
     "RequestEngine": "Extends/RequestEngine.js"
   },
   "publishable": {
-    "configs": "Configs"
+    "configs": "Configs",
+    "models": "Models"
   }
 }

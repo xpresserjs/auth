@@ -3,9 +3,9 @@ module.exports = {
      * Define model where required auth functions are defined.
      * This will be imported from the users model directory using
      * @example
-     * $.use.model('Auth/User');
+     * $.use.model('Auth/AuthProvider');
      */
-    model: "User",
+    model: "Auth/AuthProvider",
 
     /**
      * The primary key in most auth applications is the 'email'
@@ -17,6 +17,7 @@ module.exports = {
     modelPasswordProvider: "authPasswordProvider",
     modelDataProvider: "authDataProvider",
     modelRegisterHandler: "authRegisterHandler",
+    modelLoginValidator: "authLoginValidator",
 
     /**
      * Template variable name to be used in all views.

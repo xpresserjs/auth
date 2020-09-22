@@ -6,6 +6,7 @@ const PluginConfig = require('../config');
 const ModelPasswordProvider = PluginConfig.get('modelPasswordProvider');
 const ModelDataProvider = PluginConfig.get('modelDataProvider');
 const ModelRegisterHandler = PluginConfig.get('modelRegisterHandler');
+const ModelLoginValidator = PluginConfig.get('modelLoginValidator');
 
 
 // Import User Model
@@ -73,7 +74,7 @@ class AuthController extends $.controller {
      */
     async login(http) {
         if (typeof User[ModelPasswordProvider] !== "function") {
-            throw new Error(`Method {${ModelPasswordProvider}} does not exits in defined Auth Model."`)
+            throw Error(`Method {${ModelPasswordProvider}} does not exits in defined Auth Model."`)
         }
 
         const loginConfig = PluginConfig.get('login');
@@ -82,40 +83,68 @@ class AuthController extends $.controller {
         const primaryKeyValue = http.body(loginConfig.primaryKey, false);
         const password = http.body(loginConfig.password, false);
 
-        const errorMsg = "Incorrect Email/Password combination!";
+        let errorMessage = "Incorrect Email/Password combination!";
         let logged = false;
 
         if (!primaryKeyValue || !password) {
-            http.with("login_error", errorMsg);
-            return this.backToRequest(http, errorMsg, false)
+            http.with("login_error", errorMessage);
+            return this.backToRequest(http, errorMessage, false)
         }
 
         let user_password = await User[ModelPasswordProvider](primaryKeyValue, modelPrimaryKey);
 
         if (!user_password) {
 
-            http.with("login_error", errorMsg);
+            http.with("login_error", errorMessage);
 
         } else {
 
             if (bcrypt.compareSync(
                 password,
                 user_password
-            )) {
+            ) === false) {
                 logged = true;
+                let validatorResult = null;
 
-                // Log User In
-                await http.loginUser(primaryKeyValue);
-                // Emit User Logged In Event
-                $.events.emit(
-                    PluginConfig.get('events.userLoggedIn'),
-                    http,
-                    primaryKeyValue
-                );
+                if (typeof User[ModelLoginValidator] === "function") {
+                    validatorResult = await User[ModelLoginValidator](primaryKeyValue, http)
 
-                http.with("login", "Login successful. Welcome to your dashboard!");
+                    if (typeof validatorResult !== "object") {
+                        throw TypeError(`Login Validator must return type object`);
+                    }
+
+                    const keysInResult = Object.keys(validatorResult);
+
+                    if (!keysInResult.includes('error') || !keysInResult.includes('proceed')) {
+                        throw TypeError(`Login Validator must return type object {error: boolean|string, proceed: boolean}`);
+                    }
+
+                    if (!validatorResult.proceed)
+                        return;
+
+                    if (validatorResult.error) {
+                        errorMessage = validatorResult.error;
+                        logged = false;
+                    }
+                }
+
+                if (logged) {
+                    // Log User In
+                    await http.loginUser(primaryKeyValue);
+                    // Emit User Logged In Events
+                    $.events.emit(
+                        PluginConfig.get('events.userLoggedIn'),
+                        http,
+                        primaryKeyValue
+                    );
+
+                    http.with("login", "Login successful. Welcome to your dashboard!");
+                } else {
+                    http.with("login_error", errorMessage);
+                }
+
             } else {
-                http.with("login_error", errorMsg);
+                http.with("login_error", errorMessage);
             }
 
         }
@@ -125,7 +154,7 @@ class AuthController extends $.controller {
         if (http.req.xhr) {
             return http.toApi({
                 logged,
-                msg: logged ? 'Login Successful.' : errorMsg,
+                message: logged ? 'Login Successful.' : errorMessage,
             }, logged);
         }
 
@@ -147,7 +176,7 @@ class AuthController extends $.controller {
 
         const returnCode = proceed ? 200 : 400;
         if (typeof data === "string") {
-            data = {msg: data};
+            data = {message: data};
         }
 
         if (http.req.xhr) {
@@ -198,10 +227,10 @@ class AuthController extends $.controller {
         const user = await User[ModelDataProvider](primaryKeyValue, modelPrimaryKey);
 
         // User Exists
-        let msg = "Email has an account already.";
+        let message = "Email has an account already.";
         if (user) {
-            http.with("reg_error", msg);
-            return this.backToRequest(http, {msg}, false);
+            http.with("reg_error", message);
+            return this.backToRequest(http, {message}, false);
         }
 
         // Encrypt User Password
@@ -211,10 +240,10 @@ class AuthController extends $.controller {
         const newUser = {[modelPrimaryKey]: primaryKeyValue, password, name};
 
         // Inset new user data object
-        const RegisteredUser = await User[ModelRegisterHandler](newUser);
+        const RegisteredUser = await User[ModelRegisterHandler](newUser, http);
 
         if (!RegisteredUser) {
-            throw Error('ModelRegisterHandler: returned nothing or false')
+            return
         }
 
         // Emit Event
@@ -224,10 +253,10 @@ class AuthController extends $.controller {
             RegisteredUser
         );
 
-        msg = 'Registration successful, Login now!';
+        message = 'Registration successful, Login now!';
 
-        http.with('reg_success', msg);
-        return this.backToRequest(http, {msg}, true);
+        http.with('reg_success', message);
+        return this.backToRequest(http, {message}, true);
     }
 
     /**
