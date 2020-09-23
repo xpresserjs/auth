@@ -4,17 +4,17 @@ module.exports = {
      * @param {any} value - Value of primary key field
      * @param {string} key - Name of primary key field
      */
-    authPasswordProvider(value, key) {
-        /* Return user password */
+    userPasswordProvider(value, key) {
+        /* Return hashed user password from database */
     },
 
 
     /**
-     * Auth Password Provider
+     * Auth Data Provider
      * @param {any} value - Value of primary key field
      */
-    authDataProvider(value) {
-        /* Return user data */
+    userDataProvider(value) {
+        /* Return user data using primary key value */
     },
 
 
@@ -23,7 +23,7 @@ module.exports = {
      * @param {object} formData - Registration Form
      * @param {Xpresser.Http} http - Current Request
      */
-    authRegisterHandler(formData, http) {
+    userRegistrationHandler(formData, http) {
         /* Handle/Validate registration form data */
     },
 
@@ -33,11 +33,11 @@ module.exports = {
      * @param {any} value - Value of primary key field
      * @param {Xpresser.Http} http - Current Request
      */
-    authLoginValidator(value, http) {
+    userLoginValidator(value, http) {
         /* Run Validator Here. */
 
         return {
-            // Return error message (string) if error occurred in validation.
+            // Return error message (string) if error occurred during validation.
             error: false,
 
             // Return false if you don't want the plugin to respond to this request.

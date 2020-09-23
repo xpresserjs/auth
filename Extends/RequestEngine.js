@@ -1,6 +1,6 @@
 const PluginConfig = require('../config');
 const modelPrimaryKey = PluginConfig.get('modelPrimaryKey', 'email');
-const modelDataProvider = PluginConfig.get('modelDataProvider');
+const userDataProvider = PluginConfig.get('userDataProvider');
 
 
 // Get Session Keys
@@ -47,7 +47,7 @@ module.exports = function (RequestEngine) {
             }
 
             const publicKey = $.base64.decodeToObject(this.session.publicKey);
-            return User[modelDataProvider](publicKey);
+            return User[userDataProvider](publicKey);
         }
 
         /**
@@ -89,7 +89,7 @@ module.exports = function (RequestEngine) {
             if (typeof id === "number") {
                 let user;
                 try{
-                    user = await User[modelDataProvider]();
+                    user = await User[userDataProvider]();
                 } catch (e) {
                     throw Error(e)
                 }

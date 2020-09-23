@@ -3,10 +3,10 @@
  * @type {ObjectCollection}
  */
 const PluginConfig = require('../config');
-const ModelPasswordProvider = PluginConfig.get('modelPasswordProvider');
-const ModelDataProvider = PluginConfig.get('modelDataProvider');
-const ModelRegisterHandler = PluginConfig.get('modelRegisterHandler');
-const ModelLoginValidator = PluginConfig.get('modelLoginValidator');
+const UserPasswordProvider = PluginConfig.get('userPasswordProvider');
+const UserDataProvider = PluginConfig.get('userDataProvider');
+const UserRegistrationHandler = PluginConfig.get('userRegistrationHandler');
+const UserLoginValidator = PluginConfig.get('userLoginValidator');
 
 
 // Import User Model
@@ -73,8 +73,8 @@ class AuthController extends $.controller {
      * @return {Promise<*>}
      */
     async login(http) {
-        if (typeof User[ModelPasswordProvider] !== "function") {
-            throw Error(`Method {${ModelPasswordProvider}} does not exits in defined Auth Model."`)
+        if (typeof User[UserPasswordProvider] !== "function") {
+            throw Error(`Method {${UserPasswordProvider}} does not exits in defined Auth Model."`)
         }
 
         const loginConfig = PluginConfig.get('login');
@@ -91,7 +91,7 @@ class AuthController extends $.controller {
             return this.backToRequest(http, errorMessage, false)
         }
 
-        let user_password = await User[ModelPasswordProvider](primaryKeyValue, modelPrimaryKey);
+        let user_password = await User[UserPasswordProvider](primaryKeyValue, modelPrimaryKey);
 
         if (!user_password) {
 
@@ -106,8 +106,8 @@ class AuthController extends $.controller {
                 logged = true;
                 let validatorResult = null;
 
-                if (typeof User[ModelLoginValidator] === "function") {
-                    validatorResult = await User[ModelLoginValidator](primaryKeyValue, http)
+                if (typeof User[UserLoginValidator] === "function") {
+                    validatorResult = await User[UserLoginValidator](primaryKeyValue, http)
 
                     if (typeof validatorResult !== "object") {
                         throw TypeError(`Login Validator must return type object`);
@@ -195,12 +195,12 @@ class AuthController extends $.controller {
      */
     async register(http) {
 
-        if (typeof User[ModelDataProvider] !== "function") {
-            throw new Error(`Method {${ModelDataProvider}} does not exits in defined Auth Model."`)
+        if (typeof User[UserDataProvider] !== "function") {
+            throw new Error(`Method {${UserDataProvider}} does not exits in defined Auth Model."`)
         }
 
-        if (typeof User[ModelRegisterHandler] !== "function") {
-            throw new Error(`Method {${ModelRegisterHandler}} does not exits in defined Auth Model."`)
+        if (typeof User[UserRegistrationHandler] !== "function") {
+            throw new Error(`Method {${UserRegistrationHandler}} does not exits in defined Auth Model."`)
         }
 
         const regConfig = PluginConfig.get('register');
@@ -224,7 +224,7 @@ class AuthController extends $.controller {
             return this.backToRequest(http, `Name not found.`, false)
         }
 
-        const user = await User[ModelDataProvider](primaryKeyValue, modelPrimaryKey);
+        const user = await User[UserDataProvider](primaryKeyValue, modelPrimaryKey);
 
         // User Exists
         let message = "Email has an account already.";
@@ -240,7 +240,7 @@ class AuthController extends $.controller {
         const newUser = {[modelPrimaryKey]: primaryKeyValue, password, name};
 
         // Inset new user data object
-        const RegisteredUser = await User[ModelRegisterHandler](newUser, http);
+        const RegisteredUser = await User[UserRegistrationHandler](newUser, http);
 
         if (!RegisteredUser) {
             return

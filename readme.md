@@ -25,8 +25,9 @@ The Default Configuration file can be imported into your project using the xjs-c
 ```sh
 xjs publish Auth configs
 ```
-The above command will publish the configs file of this plugin into your configs folder.
+The above command will publish the configuration files of this plugin into your configs folder.
 Then you can include it in your xpresser config like so:
+
 ```javascript
 const authPluginConfig = require('./backend/configs/Auth/config');
 
@@ -51,7 +52,7 @@ Add to your `paths.jsConfigs/plugins.json`
 The auth plugin includes a **global middleware** that loads the current logged in user.
 You have to add it to your project.
 
-Add to your use.json file. if you don't have on then create a use.json in your backend folder.
+Add to your use.json file. if you don't have one then create a use.json file in your backend folder.
 ```json
 {
   "middlewares": {
@@ -63,18 +64,26 @@ Add to your use.json file. if you don't have on then create a use.json in your b
 }
 ```
 
-## Auth Model
-Your defined auth model must have required functions needed to tell the plugin how you want your Login/Registration to be handled.
+## Auth Providers
+The auth providers are functions defined by you to tell the plugin how you want your login and registration handled.
 
-- Auth Password Provider [`authPasswordProvider`]
-- Auth Data Provider [`authDataProvider`]
+- User Password Provider [`userPasswordProvider`]
+- User Data Provider [`userDataProvider`]
+- User Registration Handler [`userRegistrationHandler`]
+- User Login Validator [`userLoginValidator`]
+
+To publish the models/Auth/AuthProviders.js file run 
+```
+xjs publish Auth models
+```
+
 
 ### Auth Password Provider
 This function should return the previously saved hashed password for the `primaryKey` key passed to it.
 
 ```javascript
-class User {
-    static async authPasswordProvider(primaryKeyValue, modelPrimaryKey) {
+module.exports =  {
+    async userPasswordProvider(primaryKeyValue, modelPrimaryKey) {
         // Return users hashed password from database
         const user = await this.findOne({[modelPrimaryKey]: primaryKeyValue});
         if(!user) return undefined;
@@ -96,10 +105,10 @@ if the `authPasswordProvider` returns false or undefined the login is stopped, a
 This function should return the user data of the `modelPrimaryKey`, it used by the plugin to check if a user exists and to load current logged in user data.
 
 ```javascript
-class User {
-    static async authDataProvider(primaryKeyValue, modelPrimaryKey) {
+module.exports = {
+    async authDataProvider(email) {
         // Return users hashed password from database
-        const user = await this.findOne({[modelPrimaryKey]: primaryKeyValue});
+        const user = await this.findOne({email});
         if(!user) return undefined;
         
         // return user data
@@ -113,15 +122,37 @@ This function is where you handle your registration using the form data passed t
 
 **Note:** Must return true or any value but not `undefined, false or null`
 ```javascript
-class User {
-    static async authRegisterHandler(formData) {
+module.exports = {
+    async authRegisterHandler(formData, http) {
         // Save new user using formData
        return await new User(formData).save();
     }
 }
 ```
-The data returned is passed to the `events.userRegistered` event, given you opportunity to do more with the request and formData received.
+The data returned is passed to the `events.userRegistered` event, given you opportunity to do more with the request `http` instance.
 
+
+### Auth Login validator
+This function is where you validate how users are allowed to login. it must return an object with this signature: 
+```typescript
+{error: string|false, proceed: boolean}
+```
+For example
+```javascript
+module.exports = {
+    async userLoginValidator(email, http) {
+        const banned = await User.count({email, banned: true});
+        
+        return {
+            // Return error message (string) if error occurred during validation.
+            error: banned? 'You have been banend' : false,
+
+            // Return false if you don't want the plugin to respond to this request.
+            proceed: true
+        }
+    }
+}
+```
 
 
 
