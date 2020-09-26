@@ -1,3 +1,5 @@
+const {ServerResponse} = require('http');
+
 /**
  * Load Config from config.js
  * @type {ObjectCollection}
@@ -93,12 +95,8 @@ class AuthController extends $.controller {
 
         let user_password = await User[UserPasswordProvider](primaryKeyValue, modelPrimaryKey);
 
-
-
         if (!user_password) {
-
             http.with("login_error", errorMessage);
-
         } else {
             if (bcrypt.compareSync(
                 password,
@@ -237,7 +235,7 @@ class AuthController extends $.controller {
         // Inset new user data object
         const RegisteredUser = await User[UserRegistrationHandler](newUser, http);
 
-        if (!RegisteredUser) {
+        if (RegisteredUser instanceof ServerResponse) {
             return
         }
 
