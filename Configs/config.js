@@ -37,6 +37,8 @@ module.exports = {
     routes: {
         // if false, no routes from this plugin will be registered.
         enabled: true,
+        // if apiOnly is true, no route with views will be added.
+        apiOnly: false,
         // Login Route Name
         login: "auth",
         // Route name to redirect to after login.

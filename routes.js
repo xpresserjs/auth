@@ -10,8 +10,10 @@ if (config.get('routes.enabled')) {
 
     Route.path('/auth', () => {
 
-        Route.get('=index');
-        Route.get('@dashboard');
+        if (config.get('routes.apiOnly', false) === false) {
+            Route.get('=index');
+            Route.get('@dashboard');
+        }
 
         Route.post('@login');
         Route.post('@register');
