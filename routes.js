@@ -23,7 +23,7 @@ if (config.get('routes.enabled')) {
 
         Route.post('@login');
         Route.post('@register');
-        Route.all('@logout');
+        Route.post('@logout');
 
     }).controller('Auth', true).as('auth');
 

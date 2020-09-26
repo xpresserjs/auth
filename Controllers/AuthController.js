@@ -282,7 +282,7 @@ class AuthController extends $.controller {
         // Return data
         http.with({logout: "Logout successful."});
 
-        return http.redirectToRoute("auth");
+        return http.redirectToRoute(PluginConfig.get('routes.login'));
     }
 }
 
