@@ -219,12 +219,6 @@ class AuthController extends $.controller {
             return this.backToRequest(http, `Password not found.`, false)
         }
 
-        let name = http.body(regConfig.name, false);
-
-        if (!name) {
-            return this.backToRequest(http, `Name not found.`, false)
-        }
-
         const user = await User[UserDataProvider](primaryKeyValue, modelPrimaryKey);
 
         // User Exists
@@ -238,7 +232,7 @@ class AuthController extends $.controller {
         password = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
 
         // Setup new user data object
-        const newUser = {[modelPrimaryKey]: primaryKeyValue, password, name};
+        const newUser = {[modelPrimaryKey]: primaryKeyValue, password};
 
         // Inset new user data object
         const RegisteredUser = await User[UserRegistrationHandler](newUser, http);

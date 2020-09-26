@@ -77,7 +77,6 @@ module.exports = {
     register: {
         primaryKey: 'join-email',
         password: 'join-password',
-        name: 'join-name'
     },
 
     /**
