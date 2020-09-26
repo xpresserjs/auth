@@ -18,7 +18,7 @@ module.exports = {
         if (!http.isLogged()) {
 
             if (http.req.xhr) {
-                return http.toApiFalse({msg: "User is not logged"})
+                return http.toApiFalse({error: "User is not logged"})
             }
 
             return http.redirectToRoute('auth');
@@ -36,7 +36,7 @@ module.exports = {
         if (http.isLogged()) {
 
             if (http.req.xhr) {
-                return http.toApiFalse({msg: "User is already logged"})
+                return http.toApiFalse({error: "User is already logged"})
             }
 
             return http.redirectToRoute(routes.afterLogin);
