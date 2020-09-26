@@ -93,16 +93,17 @@ class AuthController extends $.controller {
 
         let user_password = await User[UserPasswordProvider](primaryKeyValue, modelPrimaryKey);
 
+
+
         if (!user_password) {
 
             http.with("login_error", errorMessage);
 
         } else {
-
             if (bcrypt.compareSync(
                 password,
                 user_password
-            ) === false) {
+            )) {
                 logged = true;
                 let validatorResult = null;
 
