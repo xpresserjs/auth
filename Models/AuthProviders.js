@@ -11,9 +11,9 @@ module.exports = {
 
     /**
      * Auth Data Provider
-     * @param {any} value - Value of primary key field
+     * @param {any} data - Value of primary key field
      */
-    userDataProvider(value) {
+    userDataProvider(data) {
         /* Return user data using primary key value */
     },
 

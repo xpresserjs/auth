@@ -70,12 +70,12 @@ module.exports = function (RequestEngine) {
                 return false;
             }
 
-            const keyAndValue = $.base64.decodeToObject(session.get('publicKey', {key: "", value: ""}));
+            const keyAndValue = $.base64.decodeToObject(session.get('publicKey', {key: "", date: ""}));
             const unHashed = $.base64.decode(session.get('publicHash', 'none'));
 
 
             // @ts-ignore
-            return unHashed === `${keyAndValue.key}:${keyAndValue.value}`
+            return unHashed === `${keyAndValue.key}:${keyAndValue.date}`
         }
 
         /**
@@ -99,7 +99,7 @@ module.exports = function (RequestEngine) {
 
             const time = $.helpers.now();
 
-            this.session.publicKey = $.base64.encode({key: modelPrimaryKeyValue, value: time});
+            this.session.publicKey = $.base64.encode({key: modelPrimaryKeyValue, date: time});
             this.session.publicHash = $.base64.encode(modelPrimaryKeyValue + ':' + time);
         }
 
