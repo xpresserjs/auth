@@ -1,4 +1,4 @@
-const config = require('./Configs/config');
+const config = require('./exports/config');
 
 // Return plugin config as an object collection
 const PluginConfig = $.objectCollection(config);

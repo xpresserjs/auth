@@ -17,7 +17,7 @@
     "RequestEngine": "Extends/RequestEngine.js"
   },
   "importable": {
-    "configs": "Configs",
-    "models": "Models"
+    "configs": "exports/config.js",
+    "models": "exports/models"
   }
 }
