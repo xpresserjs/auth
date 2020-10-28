@@ -16,7 +16,7 @@
   "extends": {
     "RequestEngine": "Extends/RequestEngine.js"
   },
-  "publishable": {
+  "importable": {
     "configs": "Configs",
     "models": "Models"
   }

@@ -17,13 +17,10 @@ if (config.get('routes.enabled')) {
     Route.path((urlPrefix ? urlPrefix : '') + '/auth', () => {
 
         if (config.get('routes.apiOnly', false) === false) {
-            Route.get('=index');
-            Route.get('@dashboard');
+            Route.getMany(['=index', '@dashboard']);
         }
 
-        Route.post('@login');
-        Route.post('@register');
-        Route.post('@logout');
+        Route.postMany(['@login', '@register', '@logout']);
 
     }).controller('Auth', true).as('auth');
 
