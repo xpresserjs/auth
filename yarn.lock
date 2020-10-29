@@ -2560,10 +2560,10 @@ wrappy@1:
   resolved "https://registry.yarnpkg.com/wrappy/-/wrappy-1.0.2.tgz#b5243d8f3ec1aa35f1364605bc0d1036e30ab69f"
   integrity sha1-tSQ9jz7BqjXxNkYFvA0QNuMKtp8=
 
-xpresser@^0.2.93:
-  version "0.2.93"
-  resolved "https://registry.yarnpkg.com/xpresser/-/xpresser-0.2.93.tgz#d9b399bb7e9b28938b13f3b95138a6670cc66620"
-  integrity sha512-HCRGEouCJ2+5aNGlDtHLb0dswPHtu5aScwayYGH3tR9KffpyLLG2sWO/eIpxtTLZheM61qwzd0PVed19pH+utA==
+xpresser@^0.2.95:
+  version "0.2.95"
+  resolved "https://registry.yarnpkg.com/xpresser/-/xpresser-0.2.95.tgz#98d2534379739d43104d767806cb797251229279"
+  integrity sha512-wSVdtUBF+c7Hkypb4biS12oIpNc+HfPQZQXF8nOxK0QrC/68QQYlSREk3nkU54UnZ2BNg0ScaN6mtpGZWGZfHQ==
   dependencies:
     "@types/express" "^4.17.7"
     "@types/node" "^14.14.5"

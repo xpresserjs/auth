@@ -5,7 +5,7 @@ const PluginConfig = $.objectCollection(config);
 
 // Merge with user defined configuration
 PluginConfig.merge(
-    $.$config.get('plugins[@xpresser/auth]', {})
+    $.config.get('plugins[@xpresser/auth]', {})
 );
 
 module.exports = PluginConfig;
