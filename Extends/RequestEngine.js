@@ -1,4 +1,4 @@
-const PluginConfig = require('../config');
+const {$, PluginConfig} = require('../config');
 const modelPrimaryKey = PluginConfig.get('modelPrimaryKey', 'email');
 const userDataProvider = PluginConfig.get('userDataProvider');
 

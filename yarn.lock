@@ -31,10 +31,10 @@
     "@types/qs" "*"
     "@types/range-parser" "*"
 
-"@types/express@^4.17.7":
-  version "4.17.8"
-  resolved "https://registry.yarnpkg.com/@types/express/-/express-4.17.8.tgz#3df4293293317e61c60137d273a2e96cd8d5f27a"
-  integrity sha512-wLhcKh3PMlyA2cNAB9sjM1BntnhPMiM0JOBwPBqttjHev2428MLEB4AYVN+d8s2iyCVZac+o41Pflm/ZH5vLXQ==
+"@types/express@^4.17.9":
+  version "4.17.9"
+  resolved "https://registry.yarnpkg.com/@types/express/-/express-4.17.9.tgz#f5f2df6add703ff28428add52bdec8a1091b0a78"
+  integrity sha512-SDzEIZInC4sivGIFY4Sz1GG6J9UObPwCInYJjko2jzOf/Imx/dlpume6Xxwj1ORL82tBbmN4cPDIDkLbWHk9hw==
   dependencies:
     "@types/body-parser" "*"
     "@types/express-serve-static-core" "*"
@@ -2560,12 +2560,13 @@ wrappy@1:
   resolved "https://registry.yarnpkg.com/wrappy/-/wrappy-1.0.2.tgz#b5243d8f3ec1aa35f1364605bc0d1036e30ab69f"
   integrity sha1-tSQ9jz7BqjXxNkYFvA0QNuMKtp8=
 
-xpresser@^0.2.95:
-  version "0.2.95"
-  resolved "https://registry.yarnpkg.com/xpresser/-/xpresser-0.2.95.tgz#98d2534379739d43104d767806cb797251229279"
-  integrity sha512-wSVdtUBF+c7Hkypb4biS12oIpNc+HfPQZQXF8nOxK0QrC/68QQYlSREk3nkU54UnZ2BNg0ScaN6mtpGZWGZfHQ==
+xpresser@^0.3.13:
+  version "0.3.13"
+  resolved "https://registry.yarnpkg.com/xpresser/-/xpresser-0.3.13.tgz#3516f1375c0e193465290dc16e5075039f76b8ef"
+  integrity sha512-a4KADxls5++NYSBtH9v/3HPI9FlZ4Dj6StbQC3WAgF2QSCrUZI4CuvL6Th1m+pf4lj4Ato72lAMj8jKspszTVg==
   dependencies:
-    "@types/express" "^4.17.7"
+    "@types/express" "^4.17.9"
+    "@types/lodash" "^4.14.162"
     "@types/node" "^14.14.5"
     "@xpresser/router" "^1.0.13"
     body-parser "^1.19.0"
@@ -2581,6 +2582,7 @@ xpresser@^0.2.95:
     handlebars "^4.7.6"
     helmet "^4.1.1"
     knex "^0.21.8"
+    lodash "^4.17.20"
     moment "^2.29.1"
     object-collection "^1.0.30"
     pluralize "^8.0.0"

@@ -1,4 +1,4 @@
-const PluginConfig = require("../config");
+const {PluginConfig} = require("../config");
 const templateVariable = PluginConfig.get('templateVariable');
 
 /**

@@ -1,4 +1,6 @@
+const {getInstance} = require('xpresser');
 const config = require('./exports/config');
+const $ = getInstance();
 
 // Return plugin config as an object collection
 const PluginConfig = $.objectCollection(config);
@@ -8,4 +10,4 @@ PluginConfig.merge(
     $.config.get('plugins[@xpresser/auth]', {})
 );
 
-module.exports = PluginConfig;
+module.exports = {$, PluginConfig};

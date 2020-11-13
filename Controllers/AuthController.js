@@ -1,10 +1,6 @@
+const {ControllerClass} = require('xpresser');
 const {ServerResponse} = require('http');
-
-/**
- * Load Config from config.js
- * @type {ObjectCollection}
- */
-const PluginConfig = require('../config');
+const {$, PluginConfig} = require('../config');
 const UserPasswordProvider = PluginConfig.get('userPasswordProvider');
 const UserDataProvider = PluginConfig.get('userDataProvider');
 const UserRegistrationHandler = PluginConfig.get('userRegistrationHandler');
@@ -15,7 +11,7 @@ const UserLoginValidator = PluginConfig.get('userLoginValidator');
 const User = $.use.model(PluginConfig.get('model'));
 const bcrypt = require("bcryptjs");
 
-class AuthController extends $.controller {
+class AuthController extends ControllerClass {
 
     static middleware() {
         return {
