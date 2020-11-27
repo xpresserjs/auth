@@ -227,7 +227,7 @@ class AuthController extends ControllerClass {
 
         if (RegisteredUser instanceof Error) {
             http.with('reg_error', RegisteredUser.message);
-            return this.backToRequest(http, {message}, false);
+            return this.backToRequest(http, {message: RegisteredUser.message}, false);
         }
 
         // Emit Event
