@@ -1,12 +1,18 @@
 const {PluginConfig} = require("../config");
-const routes = PluginConfig.get("routes");
+
+/**
+ * Cache current config state
+ * @type {import('../exports/config')}
+ */
+const configCache = PluginConfig.all();
+const routes = configCache.routes
+const useJson = configCache.responseType === 'json';
 
 /*
 *   Name: AuthMiddleware
 *   Exports: function(x) || Object of multiple functions(x)
 *   Return: true/false
 */
-
 module.exports = {
 
     /**
@@ -17,7 +23,7 @@ module.exports = {
     allow(http) {
         if (!http.isLogged()) {
 
-            if (http.req.xhr) {
+            if (useJson || http.req.xhr) {
                 return http.toApiFalse({error: "User is not logged"})
             }
 
@@ -35,7 +41,7 @@ module.exports = {
     guest(http) {
         if (http.isLogged()) {
 
-            if (http.req.xhr) {
+            if (useJson || http.req.xhr) {
                 return http.toApiFalse({error: "User is already logged"})
             }
 

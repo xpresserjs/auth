@@ -9,13 +9,13 @@
 
                 <%- include('partials/alerts') %>
 
-                <pre class="mt-4 mb-5"><%= JSON.stringify(user, null, 2) %></pre>
+                <pre class="mt-4 mb-5 bg-light p-3 rounded"><%= JSON.stringify(user, null, 2) %></pre>
 
-                <div class="text-center mt-5">
-                    <a href="<%= ctx.route('auth.logout') %>" class="btn btn-block btn-danger">
+                <form action="<%=ctx.route('auth.logout')%>" method="post" class="text-center mt-5">
+                    <button type="submit" class="btn btn-block btn-danger">
                         Logout
-                    </a>
-                </div>
+                    </button>
+                </form>
             </div>
         </div>
     </div>

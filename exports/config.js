@@ -13,12 +13,6 @@ module.exports = {
      */
     model: "Auth/AuthProviders",
 
-    // Set Providers
-    userPasswordProvider: "userPasswordProvider",
-    userDataProvider: "userDataProvider",
-    userRegistrationHandler: "userRegistrationHandler",
-    userLoginValidator: "userLoginValidator",
-
     /**
      * Template variable name to be used in all views.
      * Saved in req.locals
@@ -30,6 +24,11 @@ module.exports = {
      */
     usingEjs: true,
 
+    /**
+     * Set Response Type (json|redirect)
+     */
+    responseType: "redirect",
+
 
     /**
      * Configure Auth routes
@@ -38,7 +37,7 @@ module.exports = {
         // if false, no routes from this plugin will be registered.
         enabled: true,
         // if prefix is defined it will be added to the url
-        urlPrefix:  undefined,
+        urlPrefix: undefined,
         // if apiOnly is true, no route with views will be added.
         apiOnly: false,
         // Login Route Name
@@ -63,9 +62,10 @@ module.exports = {
      * <input name="login-password" type="password">
      */
     login: {
-        primaryKey: 'login-email',
-        password: 'login-password',
+        primaryKey: "login-email",
+        password: "login-password",
     },
+
 
     /**
      * Set Registration Form keys to be used in views
@@ -75,21 +75,23 @@ module.exports = {
      * <input name="join-name" type="text">
      */
     register: {
-        primaryKey: 'join-email',
-        password: 'join-password',
+        primaryKey: "join-email",
+        password: "join-password",
     },
+
 
     /**
      * Set Events to listen for at different stages of the auth process.
      */
     events: {
         // Emits when user logs in.
-        userLoggedIn: 'Auth.userLoggedIn',
+        userLoggedIn: "Auth.userLoggedIn",
         // Emits when user logs out.
-        userLoggedOut: 'Auth.userLoggedOut',
+        userLoggedOut: "Auth.userLoggedOut",
         // Emits when user just registered.
-        userRegistered: 'Auth.userRegistered'
+        userRegistered: "Auth.userRegistered"
     },
+
 
     /**
      * Define session keys
@@ -101,5 +103,27 @@ module.exports = {
         login: [],
         logout: [],
         registered: []
+    },
+
+    /**
+     * Set Custom Provider Names.
+     */
+    userPasswordProvider: "userPasswordProvider",
+    userDataProvider: "userDataProvider",
+    userRegistrationHandler: "userRegistrationHandler",
+    userLoginValidator: "userLoginValidator",
+
+
+    /**
+     * Set Custom Errors
+     */
+    responseMessages: {
+        register_email_not_found: "Email not found.",
+        register_password_not_found: "Email not found.",
+        register_email_exists: "Email has an account already.",
+        registration_successful: "Registration successful, Login now!",
+        login_successful: "Login successful.",
+        login_failed: "Incorrect Email/Password combination!",
+        logout_successful: "Logout successful."
     }
 };

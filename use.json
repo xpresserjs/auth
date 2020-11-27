@@ -18,6 +18,7 @@
   },
   "importable": {
     "configs": "exports/config.js",
-    "models": "exports/models"
+    "models": "exports/models",
+    "views": "Views"
   }
 }

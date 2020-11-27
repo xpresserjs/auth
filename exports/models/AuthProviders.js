@@ -1,36 +1,47 @@
 module.exports = {
     /**
      * Auth Password Provider
-     * @param {any} value - Value of primary key field
-     * @param {string} key - Name of primary key field
+     * @param {any} value - Value of users primary key field
+     * @param {string} key - Name of users primary key field
      */
-    userPasswordProvider(value, key) {
+    async userPasswordProvider(value, key) {
         /* Return hashed user password from database */
     },
 
 
     /**
      * Auth Data Provider
-     * @param {any} data - Value of primary key field
+     * @param {any} key - Value of users primary key field
+     * @param {string} loginTime - login time.
      */
-    userDataProvider(data) {
+    async userDataProvider(key, loginTime) {
         /* Return user data using primary key value */
     },
 
 
     /**
      * Auth Register handler
+     *
+     * **Note:** Must return true or any value but not undefined, false or null
+     * Any data returned that passes the above validation is passed to the `events.userRegistered` event,
+     * given you opportunity to do more with the current `http` instance.
+     *
      * @param {object} formData - Registration Form
      * @param {Xpresser.Http} http - Current Request
      */
-    userRegistrationHandler(formData, http) {
-        /* Handle/Validate registration form data */
+    async userRegistrationHandler(formData, http) {
+
+        // Remove this code and handle your user registration.
+        return http.newError().view({
+            message: 'No registration handler yet!',
+            log: new Error().stack
+        })
     },
 
 
     /**
      * Auth Register handler
-     * @param {any} value - Value of primary key field
+     * @param {any} value - Value of users primary key field
      * @param {Xpresser.Http} http - Current Request
      */
     userLoginValidator(value, http) {

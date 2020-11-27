@@ -1,25 +1,23 @@
 const {$, PluginConfig} = require('../config');
+const User = $.use.model(PluginConfig.get('model'), true);
+
+/**
+ * Cache current config state
+ * @type {import('../exports/config')}
+ */
+const cacheConfig = PluginConfig.all();
 const modelPrimaryKey = PluginConfig.get('modelPrimaryKey', 'email');
-const userDataProvider = PluginConfig.get('userDataProvider');
+const userDataProvider = cacheConfig.userDataProvider;
 
 
 // Get Session Keys
 // Needed for logout.
-const DefaultSessionKeys = ['publicKey', 'publicHash'];
+const DefaultSessionKeys = ['flash', 'publicKey', 'publicHash'];
 
 const DefinedSessionKeys = PluginConfig.array("session.logout");
 const LoginSessionKeys = PluginConfig.array("session.login");
 
-const AllSessionKeys = [
-    ...DefaultSessionKeys,
-    ...DefinedSessionKeys
-];
-
-/**
- * @type {Objection.Model | *}
- */
-const User = $.use.model(PluginConfig.get('model'), true);
-
+const AllSessionKeys = DefaultSessionKeys.concat(DefinedSessionKeys);
 
 /**
  * AuthRequestEngine
@@ -34,7 +32,7 @@ module.exports = function (RequestEngine) {
          * @returns {*}
          */
         authUser() {
-            return this.res.locals[PluginConfig.get('templateVariable')];
+            return this.res.locals[cacheConfig.templateVariable];
         }
 
         /**
@@ -47,7 +45,7 @@ module.exports = function (RequestEngine) {
             }
 
             const publicKey = $.base64.decodeToObject(this.session.publicKey);
-            return User[userDataProvider](publicKey);
+            return User[userDataProvider](publicKey.key, publicKey.date);
         }
 
         /**
@@ -80,36 +78,32 @@ module.exports = function (RequestEngine) {
 
         /**
          * Login a user using id
-         * @param id
-         * @return {Promise<void>}
+         * @param value - model primary key value.
+         * @return {Promise<this>}
          */
-        async loginUser(id) {
-            let modelPrimaryKeyValue = id;
-
-            if (typeof id === "number") {
-                let user;
-                try{
-                    user = await User[userDataProvider]();
-                } catch (e) {
-                    throw Error(e)
-                }
-
-                if (user) modelPrimaryKeyValue = user[modelPrimaryKey];
-            }
-
+        async loginUser(value) {
             const time = $.helpers.now();
 
-            this.session.publicKey = $.base64.encode({key: modelPrimaryKeyValue, date: time});
-            this.session.publicHash = $.base64.encode(modelPrimaryKeyValue + ':' + time);
+            this.session.publicKey = $.base64.encode({key: value, date: time});
+            this.session.publicHash = $.base64.encode(value + ':' + time);
+
+            return this;
         }
 
         /**
          * Delete user sessions
          */
         logout() {
+            const user = this.authUser();
+
             for (const sessionKey of AllSessionKeys) {
                 delete this.session[sessionKey];
             }
+
+            // Emit Event
+            $.events.emit(cacheConfig.events.userLoggedOut, this, user);
+
+            return this;
         }
     }
 };

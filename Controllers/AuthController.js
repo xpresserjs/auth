@@ -1,15 +1,20 @@
-const {ControllerClass} = require('xpresser');
-const {ServerResponse} = require('http');
-const {$, PluginConfig} = require('../config');
-const UserPasswordProvider = PluginConfig.get('userPasswordProvider');
-const UserDataProvider = PluginConfig.get('userDataProvider');
-const UserRegistrationHandler = PluginConfig.get('userRegistrationHandler');
-const UserLoginValidator = PluginConfig.get('userLoginValidator');
-
-
-// Import User Model
-const User = $.use.model(PluginConfig.get('model'));
 const bcrypt = require("bcryptjs");
+const {ServerResponse} = require('http');
+const {$, PluginConfig, ControllerClass} = require('../config');
+/**
+ * Cache current config state
+ * @type {import('../exports/config')}
+ */
+const cacheConfig = PluginConfig.all();
+// Import User Model
+const User = $.use.model(cacheConfig.model);
+
+// Get providers
+const UserPasswordProvider = cacheConfig.userPasswordProvider;
+const UserDataProvider = cacheConfig.userDataProvider;
+const UserRegistrationHandler = cacheConfig.userRegistrationHandler;
+const UserLoginValidator = cacheConfig.userLoginValidator;
+
 
 class AuthController extends ControllerClass {
 
@@ -31,21 +36,10 @@ class AuthController extends ControllerClass {
             action: http.query("action", "login"),
         };
 
-        if (data.action === 'register') {
-            data['form'] = PluginConfig.get('register')
-        } else {
-            data['form'] = PluginConfig.get('login')
-        }
+        data['form'] = data.action === 'register' ? cacheConfig.register : cacheConfig.login;
 
-        const view = PluginConfig.get('views.index');
-
-        let usingEjs = true;
-
-        if (view !== 'auth::index') {
-            usingEjs = PluginConfig.get('usingEjs', usingEjs);
-        }
-
-        return http.view(view, data, false, usingEjs);
+        const view = cacheConfig.views.index;
+        return http.view(view, data, false, view === 'auth::index');
     }
 
 
@@ -55,14 +49,8 @@ class AuthController extends ControllerClass {
      * @return {void | Response }
      */
     dashboard(http) {
-        const view = PluginConfig.get('views.dashboard');
-
-        let usingEjs = true;
-        if (view !== 'auth::dashboard') {
-            usingEjs = PluginConfig.get('usingEjs', true);
-        }
-
-        return http.view(view, {}, false, usingEjs);
+        const view = cacheConfig.views.index;
+        return http.view(view, {}, false, view === 'auth::dashboard');
     }
 
     /**
@@ -75,13 +63,12 @@ class AuthController extends ControllerClass {
             throw Error(`Method {${UserPasswordProvider}} does not exits in defined Auth Model."`)
         }
 
-        const loginConfig = PluginConfig.get('login');
-        const modelPrimaryKey = PluginConfig.get('modelPrimaryKey');
+        const primaryKeyValue = http.body(cacheConfig.login.primaryKey, false);
+        const password = http.body(cacheConfig.login.password, false);
 
-        const primaryKeyValue = http.body(loginConfig.primaryKey, false);
-        const password = http.body(loginConfig.password, false);
+        let errorMessage = cacheConfig.responseMessages.login_failed;
+        let successMessage = cacheConfig.responseMessages.login_successful;
 
-        let errorMessage = "Incorrect Email/Password combination!";
         let logged = false;
 
         if (!primaryKeyValue || !password) {
@@ -89,7 +76,7 @@ class AuthController extends ControllerClass {
             return this.backToRequest(http, errorMessage, false)
         }
 
-        let user_password = await User[UserPasswordProvider](primaryKeyValue, modelPrimaryKey);
+        let user_password = await User[UserPasswordProvider](primaryKeyValue, cacheConfig.modelPrimaryKey);
 
         if (!user_password) {
             http.with("login_error", errorMessage);
@@ -102,6 +89,11 @@ class AuthController extends ControllerClass {
                 let validatorResult = null;
 
                 if (typeof User[UserLoginValidator] === "function") {
+
+                    /**
+                     * User Defined Validation result.
+                     * @type {{proceed: boolean, error: boolean | string}}
+                     */
                     validatorResult = await User[UserLoginValidator](primaryKeyValue, http)
 
                     if (typeof validatorResult !== "object") {
@@ -128,12 +120,12 @@ class AuthController extends ControllerClass {
                     await http.loginUser(primaryKeyValue);
                     // Emit User Logged In Events
                     $.events.emit(
-                        PluginConfig.get('events.userLoggedIn'),
+                        cacheConfig.events.userLoggedIn,
                         http,
                         primaryKeyValue
                     );
 
-                    http.with("login", "Login successful. Welcome to your dashboard!");
+                    http.with("login", successMessage);
                 } else {
                     http.with("login_error", errorMessage);
                 }
@@ -149,14 +141,14 @@ class AuthController extends ControllerClass {
         if (http.req.xhr) {
             return http.toApi({
                 logged,
-                message: logged ? 'Login Successful.' : errorMessage,
+                message: logged ? successMessage : errorMessage,
             }, logged);
         }
 
         return http.redirectToRoute(
             logged ?
-                PluginConfig.get('routes.afterLogin') :
-                PluginConfig.get('routes.login')
+                cacheConfig.routes.afterLogin :
+                cacheConfig.routes.login
         );
     }
 
@@ -174,7 +166,7 @@ class AuthController extends ControllerClass {
             data = {message: data};
         }
 
-        if (http.req.xhr) {
+        if (cacheConfig.responseType === 'json' || http.req.xhr) {
             return http.toApi(data, proceed, returnCode);
         }
 
@@ -198,25 +190,23 @@ class AuthController extends ControllerClass {
             throw new Error(`Method {${UserRegistrationHandler}} does not exits in defined Auth Model."`)
         }
 
-        const regConfig = PluginConfig.get('register');
-        const modelPrimaryKey = PluginConfig.get('modelPrimaryKey');
-
-        const primaryKeyValue = http.body(regConfig.primaryKey, false);
+        const modelPrimaryKey = cacheConfig.modelPrimaryKey;
+        const primaryKeyValue = http.body(cacheConfig.register.primaryKey, false);
 
         if (!primaryKeyValue) {
-            return this.backToRequest(http, `Email not found.`, false)
+            return this.backToRequest(http, cacheConfig.responseMessages.register_email_not_found, false)
         }
 
-        let password = http.body(regConfig.password, false);
+        let password = http.body(cacheConfig.register.password, false);
 
         if (!password) {
-            return this.backToRequest(http, `Password not found.`, false)
+            return this.backToRequest(http, cacheConfig.responseMessages.register_email_not_found, false)
         }
 
         const user = await User[UserDataProvider](primaryKeyValue, modelPrimaryKey);
 
         // User Exists
-        let message = "Email has an account already.";
+        let message = cacheConfig.responseMessages.register_email_exists;
         if (user) {
             http.with("reg_error", message);
             return this.backToRequest(http, {message}, false);
@@ -237,12 +227,12 @@ class AuthController extends ControllerClass {
 
         // Emit Event
         $.events.emit(
-            PluginConfig.get('events.userRegistered'),
+            cacheConfig.events.userRegistered,
             http,
             RegisteredUser
         );
 
-        message = 'Registration successful, Login now!';
+        message = cacheConfig.responseMessages.registration_successful;
 
         http.with('reg_success', message);
         return this.backToRequest(http, {message}, true);
@@ -255,22 +245,22 @@ class AuthController extends ControllerClass {
      */
     logout(http) {
 
-
         if (http.isLogged()) {
-            const user = http.authUser();
-
             // log user out.
             http.logout();
+        }
 
-            // Emit Event
-            $.events.emit(PluginConfig.get('events.userLoggedOut'), http, user);
-
+        if (cacheConfig.responseType === 'json') {
+            return http.toApi({
+                logout: true,
+                redirectTo: cacheConfig.routes.login
+            })
         }
 
         // Return data
-        http.with({logout: "Logout successful."});
+        http.with({logout: cacheConfig.responseMessages.logout_successful});
 
-        return http.redirectToRoute(PluginConfig.get('routes.login'));
+        return http.redirectToRoute(cacheConfig.routes.login);
     }
 }
 
