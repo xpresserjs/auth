@@ -225,6 +225,11 @@ class AuthController extends ControllerClass {
             return
         }
 
+        if (RegisteredUser instanceof Error) {
+            http.with('reg_error', RegisteredUser.message);
+            return this.backToRequest(http, {message}, false);
+        }
+
         // Emit Event
         $.events.emit(
             configCache.events.userRegistered,
