@@ -138,7 +138,7 @@ class AuthController extends ControllerClass {
 
         // If is xhr request then return json.
         // noinspection JSUnresolvedVariable
-        if (http.req.xhr) {
+        if (configCache.responseType === 'json' || http.req.xhr) {
             return http.toApi({
                 logged,
                 message: logged ? successMessage : errorMessage,
