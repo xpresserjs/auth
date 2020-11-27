@@ -49,7 +49,7 @@ class AuthController extends ControllerClass {
      * @return {void | Response }
      */
     dashboard(http) {
-        const view = configCache.views.index;
+        const view = configCache.views.dashboard;
         return http.view(view, {}, false, view === 'auth::dashboard');
     }
 
