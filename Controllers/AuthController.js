@@ -5,15 +5,15 @@ const {$, PluginConfig, ControllerClass} = require('../config');
  * Cache current config state
  * @type {import('../exports/config')}
  */
-const cacheConfig = PluginConfig.all();
+const configCache = PluginConfig.all();
 // Import User Model
-const User = $.use.model(cacheConfig.model);
+const User = $.use.model(configCache.model);
 
 // Get providers
-const UserPasswordProvider = cacheConfig.userPasswordProvider;
-const UserDataProvider = cacheConfig.userDataProvider;
-const UserRegistrationHandler = cacheConfig.userRegistrationHandler;
-const UserLoginValidator = cacheConfig.userLoginValidator;
+const UserPasswordProvider = configCache.userPasswordProvider;
+const UserDataProvider = configCache.userDataProvider;
+const UserRegistrationHandler = configCache.userRegistrationHandler;
+const UserLoginValidator = configCache.userLoginValidator;
 
 
 class AuthController extends ControllerClass {
@@ -36,9 +36,9 @@ class AuthController extends ControllerClass {
             action: http.query("action", "login"),
         };
 
-        data['form'] = data.action === 'register' ? cacheConfig.register : cacheConfig.login;
+        data['form'] = data.action === 'register' ? configCache.register : configCache.login;
 
-        const view = cacheConfig.views.index;
+        const view = configCache.views.index;
         return http.view(view, data, false, view === 'auth::index');
     }
 
@@ -49,7 +49,7 @@ class AuthController extends ControllerClass {
      * @return {void | Response }
      */
     dashboard(http) {
-        const view = cacheConfig.views.index;
+        const view = configCache.views.index;
         return http.view(view, {}, false, view === 'auth::dashboard');
     }
 
@@ -63,11 +63,11 @@ class AuthController extends ControllerClass {
             throw Error(`Method {${UserPasswordProvider}} does not exits in defined Auth Model."`)
         }
 
-        const primaryKeyValue = http.body(cacheConfig.login.primaryKey, false);
-        const password = http.body(cacheConfig.login.password, false);
+        const primaryKeyValue = http.body(configCache.login.primaryKey, false);
+        const password = http.body(configCache.login.password, false);
 
-        let errorMessage = cacheConfig.responseMessages.login_failed;
-        let successMessage = cacheConfig.responseMessages.login_successful;
+        let errorMessage = configCache.responseMessages.login_failed;
+        let successMessage = configCache.responseMessages.login_successful;
 
         let logged = false;
 
@@ -76,7 +76,7 @@ class AuthController extends ControllerClass {
             return this.backToRequest(http, errorMessage, false)
         }
 
-        let user_password = await User[UserPasswordProvider](primaryKeyValue, cacheConfig.modelPrimaryKey);
+        let user_password = await User[UserPasswordProvider](primaryKeyValue, configCache.modelPrimaryKey);
 
         if (!user_password) {
             http.with("login_error", errorMessage);
@@ -120,7 +120,7 @@ class AuthController extends ControllerClass {
                     await http.loginUser(primaryKeyValue);
                     // Emit User Logged In Events
                     $.events.emit(
-                        cacheConfig.events.userLoggedIn,
+                        configCache.events.userLoggedIn,
                         http,
                         primaryKeyValue
                     );
@@ -147,8 +147,8 @@ class AuthController extends ControllerClass {
 
         return http.redirectToRoute(
             logged ?
-                cacheConfig.routes.afterLogin :
-                cacheConfig.routes.login
+                configCache.routes.afterLogin :
+                configCache.routes.login
         );
     }
 
@@ -166,7 +166,7 @@ class AuthController extends ControllerClass {
             data = {message: data};
         }
 
-        if (cacheConfig.responseType === 'json' || http.req.xhr) {
+        if (configCache.responseType === 'json' || http.req.xhr) {
             return http.toApi(data, proceed, returnCode);
         }
 
@@ -190,23 +190,23 @@ class AuthController extends ControllerClass {
             throw new Error(`Method {${UserRegistrationHandler}} does not exits in defined Auth Model."`)
         }
 
-        const modelPrimaryKey = cacheConfig.modelPrimaryKey;
-        const primaryKeyValue = http.body(cacheConfig.register.primaryKey, false);
+        const modelPrimaryKey = configCache.modelPrimaryKey;
+        const primaryKeyValue = http.body(configCache.register.primaryKey, false);
 
         if (!primaryKeyValue) {
-            return this.backToRequest(http, cacheConfig.responseMessages.register_email_not_found, false)
+            return this.backToRequest(http, configCache.responseMessages.register_email_not_found, false)
         }
 
-        let password = http.body(cacheConfig.register.password, false);
+        let password = http.body(configCache.register.password, false);
 
         if (!password) {
-            return this.backToRequest(http, cacheConfig.responseMessages.register_email_not_found, false)
+            return this.backToRequest(http, configCache.responseMessages.register_email_not_found, false)
         }
 
         const user = await User[UserDataProvider](primaryKeyValue, modelPrimaryKey);
 
         // User Exists
-        let message = cacheConfig.responseMessages.register_email_exists;
+        let message = configCache.responseMessages.register_email_exists;
         if (user) {
             http.with("reg_error", message);
             return this.backToRequest(http, {message}, false);
@@ -227,12 +227,12 @@ class AuthController extends ControllerClass {
 
         // Emit Event
         $.events.emit(
-            cacheConfig.events.userRegistered,
+            configCache.events.userRegistered,
             http,
             RegisteredUser
         );
 
-        message = cacheConfig.responseMessages.registration_successful;
+        message = configCache.responseMessages.registration_successful;
 
         http.with('reg_success', message);
         return this.backToRequest(http, {message}, true);
@@ -250,17 +250,17 @@ class AuthController extends ControllerClass {
             http.logout();
         }
 
-        if (cacheConfig.responseType === 'json') {
+        if (configCache.responseType === 'json') {
             return http.toApi({
                 logout: true,
-                redirectTo: cacheConfig.routes.login
+                redirectTo: configCache.routes.login
             })
         }
 
         // Return data
-        http.with({logout: cacheConfig.responseMessages.logout_successful});
+        http.with({logout: configCache.responseMessages.logout_successful});
 
-        return http.redirectToRoute(cacheConfig.routes.login);
+        return http.redirectToRoute(configCache.routes.login);
     }
 }
 

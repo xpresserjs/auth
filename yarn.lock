@@ -56,10 +56,10 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-14.11.8.tgz#fe2012f2355e4ce08bca44aeb3abbb21cf88d33f"
   integrity sha512-KPcKqKm5UKDkaYPTuXSx8wEP7vE9GnuaXIZKijwRYcePpZFDVuy2a57LarFKiORbHOuTOOwYzxVxcUzsh2P2Pw==
 
-"@types/node@^14.14.5":
-  version "14.14.5"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.5.tgz#e92d3b8f76583efa26c1a63a21c9d3c1143daa29"
-  integrity sha512-H5Wn24s/ZOukBmDn03nnGTp18A60ny9AmCwnEcgJiTgSGsCO7k+NWP7zjCCbhlcnVCoI+co52dUAt9GMhOSULw==
+"@types/node@^14.14.9":
+  version "14.14.10"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.10.tgz#5958a82e41863cfc71f2307b3748e3491ba03785"
+  integrity sha512-J32dgx2hw8vXrSbu4ZlVhn1Nm3GbeCFNw2FWL8S5QKucHGY0cyNwjdQdO+KMBZ4wpmC7KhLCiNsdk1RFRIYUQQ==
 
 "@types/qs@*":
   version "6.9.5"
@@ -79,10 +79,10 @@
     "@types/express-serve-static-core" "*"
     "@types/mime" "*"
 
-"@xpresser/router@^1.0.13":
-  version "1.0.13"
-  resolved "https://registry.yarnpkg.com/@xpresser/router/-/router-1.0.13.tgz#f09f63b036edcbc42aa696a1d07b12e562bd3460"
-  integrity sha512-taX1sJyI2VLFCaewmVE5NiG7crZIAD0kkjgMGH0mHxh+rs2IAiB9P6PCrpGsdOV6das5KUUScVS6BSI5JXIR6Q==
+"@xpresser/router@^1.0.14":
+  version "1.0.14"
+  resolved "https://registry.yarnpkg.com/@xpresser/router/-/router-1.0.14.tgz#cea510962a07bb10f0275560f679f337c6e6b5cd"
+  integrity sha512-guafBmP3CdYwYBI0q8zmiWBfBHjykabfdIuyr4B2kAJhYJK3oeX5y1RKWtcDgbLT3DE4Yr60ijwEEn/A7r3qeQ==
   dependencies:
     lodash.clone "^4.5.0"
     lodash.snakecase "^4.1.1"
@@ -1739,10 +1739,10 @@ object-assign@^4, object-assign@^4.1.0:
   resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-4.1.1.tgz#2109adc7965887cfc05cbbd442cac8bfbb360863"
   integrity sha1-IQmtx5ZYh8/AXLvUQsrIv7s2CGM=
 
-object-collection@^1.0.30:
-  version "1.0.30"
-  resolved "https://registry.yarnpkg.com/object-collection/-/object-collection-1.0.30.tgz#aceacb4c3026501099c266fb6989b27dd3b78e85"
-  integrity sha512-JPrsxmk7I6L0DnETvcN8jeXbQF3aGVaFVUwRoJphO5mwhdyOolsEIDy00I4zgR9+gS+KVb2l4pgFeAPobbvyWA==
+object-collection@^1.0.31:
+  version "1.0.31"
+  resolved "https://registry.yarnpkg.com/object-collection/-/object-collection-1.0.31.tgz#667748000b1d4b423990469b8691de9a99ac2857"
+  integrity sha512-nyytZaGJSFhiFrpPL11YfOkWDoRGxYIa+g7J3KCLHYhNIhP+7tzREphthG2BmOWzmrIvsjSl5+l7JEcc5cTeNQ==
   dependencies:
     "@types/lodash" "^4.14.162"
     lodash "^4.17.20"
@@ -2560,15 +2560,15 @@ wrappy@1:
   resolved "https://registry.yarnpkg.com/wrappy/-/wrappy-1.0.2.tgz#b5243d8f3ec1aa35f1364605bc0d1036e30ab69f"
   integrity sha1-tSQ9jz7BqjXxNkYFvA0QNuMKtp8=
 
-xpresser@^0.3.13:
-  version "0.3.13"
-  resolved "https://registry.yarnpkg.com/xpresser/-/xpresser-0.3.13.tgz#3516f1375c0e193465290dc16e5075039f76b8ef"
-  integrity sha512-a4KADxls5++NYSBtH9v/3HPI9FlZ4Dj6StbQC3WAgF2QSCrUZI4CuvL6Th1m+pf4lj4Ato72lAMj8jKspszTVg==
+xpresser@^0.3.26:
+  version "0.3.26"
+  resolved "https://registry.yarnpkg.com/xpresser/-/xpresser-0.3.26.tgz#6a34957208dc8c1c55e515db194de74b8c06923a"
+  integrity sha512-Sv7BeAi2f6xxQa9ibLVvEkjpoOvRFQn8yG9OWX1xBbqwa3fqQZLekB3oHZGyqM3s6bKvpxIjfOiFA/sGXxTikQ==
   dependencies:
     "@types/express" "^4.17.9"
     "@types/lodash" "^4.14.162"
-    "@types/node" "^14.14.5"
-    "@xpresser/router" "^1.0.13"
+    "@types/node" "^14.14.9"
+    "@xpresser/router" "^1.0.14"
     body-parser "^1.19.0"
     build-url "^6.0.1"
     chalk "^4.1.0"
@@ -2584,7 +2584,7 @@ xpresser@^0.3.13:
     knex "^0.21.8"
     lodash "^4.17.20"
     moment "^2.29.1"
-    object-collection "^1.0.30"
+    object-collection "^1.0.31"
     pluralize "^8.0.0"
     shelljs "^0.8.4"
     sqlite3 "^5.0.0"
