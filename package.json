@@ -1,6 +1,6 @@
 {
   "name": "@xpresser/auth",
-  "version": "0.1.26",
+  "version": "0.1.27",
   "description": "Xpresser Auth Helper",
   "main": "index.js",
   "repository": "https://github.com/xpresserjs/auth.git",
