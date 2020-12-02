@@ -12,7 +12,7 @@ const userDataProvider = cacheConfig.userDataProvider;
 
 // Get Session Keys
 // Needed for logout.
-const DefaultSessionKeys = ['flash', 'publicKey', 'publicHash'];
+const DefaultSessionKeys = ['publicKey', 'publicHash'];
 
 const DefinedSessionKeys = PluginConfig.array("session.logout");
 const LoginSessionKeys = PluginConfig.array("session.login");
@@ -99,6 +99,10 @@ module.exports = function (RequestEngine) {
             for (const sessionKey of AllSessionKeys) {
                 delete this.session[sessionKey];
             }
+
+
+            if (this.session.flash)
+                delete this.session.flash;
 
             // Emit Event
             $.events.emit(cacheConfig.events.userLoggedOut, this, user);
