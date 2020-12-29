@@ -6,7 +6,6 @@ const User = $.use.model(PluginConfig.get('model'), true);
  * @type {import('../exports/config')}
  */
 const cacheConfig = PluginConfig.all();
-const modelPrimaryKey = PluginConfig.get('modelPrimaryKey', 'email');
 const userDataProvider = cacheConfig.userDataProvider;
 
 

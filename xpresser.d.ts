@@ -1,16 +1,19 @@
-declare namespace Xpresser {
+import "xpresser/types/http";
+export type XpresserAuthUser = any;
+
+declare module "xpresser/types/http" {
     interface Http {
         /**
          * Get Auth User Object
          * @returns {*}
          */
-        authUser<T=any>(): T;
+        authUser<T=XpresserAuthUser>(): T;
 
         /**
          * Auth Initiator
          * @return {Promise<null|*>}
          */
-        auth<T>(): Promise<T>
+        auth<T=XpresserAuthUser>(): Promise<T>
 
         /**
          * If User is logged
