@@ -119,7 +119,7 @@ module.exports = {
      */
     responseMessages: {
         register_email_not_found: "Email not found.",
-        register_password_not_found: "Email not found.",
+        register_password_not_found: "Password not found.",
         register_email_exists: "Email has an account already.",
         registration_successful: "Registration successful, Login now!",
         login_successful: "Login successful.",

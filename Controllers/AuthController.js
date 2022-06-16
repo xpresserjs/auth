@@ -200,7 +200,7 @@ class AuthController extends ControllerClass {
         let password = http.body(configCache.register.password, false);
 
         if (!password) {
-            return this.backToRequest(http, configCache.responseMessages.register_email_not_found, false)
+            return this.backToRequest(http, configCache.responseMessages.register_password_not_found, false)
         }
 
         const user = await User[UserDataProvider](primaryKeyValue, modelPrimaryKey);
